@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Maintenance Smart | Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root{
+      --bg:#f3f4f6;
+      --card-bg:#fff;
+      --border-subtle:#e5e7eb;
+      --accent:#2563eb;
+      --accent-soft:#eff6ff;
+      --accent-hover:#1d4ed8;
+      --text:#111827;
+      --text-soft:#6b7280;
+      --radius-xl:18px;
+      --shadow-soft-sm:0 10px 26px rgba(15,23,42,.06);
+      --shadow-soft-md:0 16px 40px rgba(15,23,42,.09);
+      --small-font:13px; --xsmall-font:11px;
+    }
+
+    /* Dark mode */
+    html[data-theme="dark"]{
+      --bg:#020617;
+      --card-bg:#020617;
+      --border-subtle:#1f2937;
+      --accent:#60a5fa;
+      --accent-soft:rgba(37,99,235,.14);
+      --accent-hover:#3b82f6;
+      --text:#e5e7eb;
+      --text-soft:#9ca3af;
+      --shadow-soft-sm:0 10px 26px rgba(0,0,0,.6);
+      --shadow-soft-md:0 16px 40px rgba(0,0,0,.75);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+      font-size:15px;
+      color:var(--text);
+      background:radial-gradient(circle at top,rgba(129,140,248,.16),transparent),var(--bg);
+      min-height:100vh;
+      overflow-x:hidden;
+      transition:background .25s ease,color .25s ease;
+    }
+
+    /* style 主題背景（桌機） */
+    html[data-style="panther"] body{
+      background:radial-gradient(circle at top,rgba(244,114,182,.28),transparent),var(--bg);
+    }
+    html[data-style="hangyodon"] body{
+      background:radial-gradient(circle at top,rgba(56,189,248,.35),transparent),var(--bg);
+    }
+
+    .page{
+      position:relative;
+      max-width:1200px;
+      margin:0 auto;
+      padding:24px 16px 40px;
+      z-index:2;
+    }
+
+    .topbar{
+      background:var(--card-bg);
+      padding:18px 20px;
+      border-radius:22px;
+      border:1px solid var(--border-subtle);
+      box-shadow:var(--shadow-soft-md);
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      align-items:center;
+      margin-bottom:18px;
+      transition:background .25s ease,box-shadow .25s ease,border-color .25s ease;
+    }
+    .brand-wrap{display:flex;align-items:center;gap:10px}
+
+    /* 左上主題 icon：改成 brand-logo 風格 */
+    .mascot{
+      width:28px;
+      height:28px;
+      border-radius:9px;
+      background:radial-gradient(circle at 30% 0,#bfdbfe,#2563eb);
+      box-shadow:0 0 10px rgba(37,99,235,0.35);
+      flex-shrink:0;
+    }
+
+    .brand-main{
+      font-size:19px;
+      font-weight:650;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      gap:6px
+    }
+    .brand-sub{font-size:13px;color:var(--text-soft)}
+
+    .top-meta{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      font-size:11px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      padding:5px 11px;
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      background:#f9fafb;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      transition:background .2s ease,border-color .2s ease,color .2s ease;
+    }
+    html[data-theme="dark"] .pill{
+      border-color:#1f2937;
+      background:#020617;
+    }
+    .pill-label{color:var(--text-soft)}
+    .pill-strong{color:var(--text);font-weight:500}
+
+    .pill.designer{
+      padding:6px 13px;
+      border-color:#dbeafe;
+      background:#eff6ff;
+    }
+    html[data-theme="dark"] .pill.designer{
+      border-color:#1d4ed8;
+      background:rgba(37,99,235,.18);
+    }
+    .pill-designer-strong{
+      font-size:14px;
+      font-weight:700;
+      letter-spacing:.02em;
+      color:var(--text);
+    }
+
+    /* theme 按鈕 */
+    .btn-ghost{
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      background:transparent;
+      padding:5px 9px;
+      font-size:13px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      cursor:pointer;
+      color:var(--text-soft);
+      transition:all .18s ease;
+    }
+    html[data-theme="dark"] .btn-ghost{
+      border-color:#1f2937;
+    }
+    .btn-ghost-icon{font-size:14px}
+    .btn-ghost:hover{
+      border-color:var(--accent);
+      color:var(--accent);
+      box-shadow:0 0 0 2px rgba(37,99,235,.14);
+      background:var(--accent-soft);
+    }
+
+    /* 整體 workspace：左選單 + 右內容 */
+    .workspace{
+      display:flex;
+      gap:16px;
+      align-items:stretch;
+      min-height:60vh;
+    }
+
+    /* 左側小列選單 */
+    .mini-nav{
+      width:64px;
+      background:rgba(255,255,255,.94);
+      border-radius:999px;
+      padding:8px 6px;
+      box-shadow:var(--shadow-soft-md);
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      position:sticky;
+      top:90px;
+      align-self:flex-start;
+      backdrop-filter:blur(12px);
+      z-index:2;
+    }
+    html[data-theme="dark"] .mini-nav{
+      background:rgba(15,23,42,.96);
+    }
+
+    .mini-nav-item{
+      width:48px;
+      height:48px;
+      border-radius:999px;
+      border:none;
+      background:transparent;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:2px;
+      cursor:pointer;
+      color:var(--text-soft);
+      font-size:11px;
+      transition:background .15s ease,color .15s ease,transform .1s ease;
+    }
+    .mini-nav-item span.icon{
+      font-size:18px;
+      line-height:1;
+    }
+    .mini-nav-item:hover{
+      background:var(--accent-soft);
+      color:var(--accent);
+      transform:translateY(-1px);
+    }
+    .mini-nav-item.active{
+      background:var(--accent);
+      color:#fff;
+      box-shadow:0 4px 10px rgba(37,99,235,.35);
+    }
+
+    /* 手機：左側選單收斂成上方橫列 */
+    @media (max-width:900px){
+      .workspace{
+        flex-direction:column;
+      }
+      .mini-nav{
+        width:100%;
+        flex-direction:row;
+        justify-content:space-between;
+        border-radius:18px;
+        position:static;
+        order:1;
+      }
+      .mini-nav-item{
+        flex:1;
+        height:44px;
+        flex-direction:row;
+        gap:6px;
+        justify-content:center;
+        font-size:12px;
+      }
+      .mini-nav-item span.icon{
+        font-size:16px;
+      }
+    }
+
+    /* 右半部內容 */
+    .workspace-main{
+      flex:1;
+      min-width:0;
+    }
+
+    .section-head{
+      margin-bottom:10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .section-title{font-size:18px;font-weight:600;color:var(--text);margin:0}
+    .section-sub{font-size:var(--small-font);color:var(--text-soft);margin:2px 0 0}
+
+    /* 搜尋 + 提示（只在 home 用） */
+    .section-tools{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .search-input{
+      font-size:13px;
+      padding:7px 11px;
+      border-radius:999px;
+      border:1px solid #d1d5db;
+      background:#fff;
+      color:var(--text);
+      min-width:220px;
+      transition:all .18s ease;
+    }
+    .search-input::placeholder{color:#9ca3af}
+    .search-input:focus-visible{
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 2px rgba(37,99,235,.2);
+    }
+    html[data-theme="dark"] .search-input{
+      background:#020617;
+      border-color:#1f2937;
+    }
+    .search-hint{font-size:11px;color:var(--text-soft);}
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+      align-items:stretch;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      background:var(--card-bg);
+      border-radius:var(--radius-xl);
+      padding:14px;
+      border:1px solid var(--border-subtle);
+      box-shadow:var(--shadow-soft-sm);
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      transition:all .18s ease;
+      text-decoration:none;
+      color:inherit;
+      min-height:230px;
+    }
+    .card:hover{
+      transform:translateY(-3px);
+      box-shadow:var(--shadow-soft-md);
+      border-color:var(--accent);
+    }
+    .card-label{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:var(--xsmall-font);
+      color:var(--accent);
+      background:var(--accent-soft);
+      padding:3px 8px;
+      border-radius:999px;
+      font-weight:500;
+    }
+    .card-title{font-size:15px;font-weight:600;margin:2px 0 4px}
+    .card-desc{font-size:var(--small-font);color:var(--text-soft);line-height:1.6;margin:0 0 6px}
+    .card-meta{font-size:var(--xsmall-font);color:var(--text-soft);margin-top:auto}
+    .enter-btn{
+      margin-top:auto;
+      align-self:flex-end;
+      padding:5px 11px;
+      border-radius:999px;
+      border:none;
+      font-size:var(--xsmall-font);
+      background:var(--accent);
+      color:#fff;
+      box-shadow:0 6px 14px rgba(37,99,235,.35);
+      cursor:pointer;
+      transition:all .16s ease;
+    }
+    .card:hover .enter-btn{background:var(--accent-hover)}
+
+    .line-select:focus-visible,
+    .btn-secondary:focus-visible,
+    .enter-btn:focus-visible,
+    .btn-ghost:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      box-shadow:0 0 0 3px rgba(37,99,235,.25);
+    }
+
+    /* 左右 panther / hangyodon */
+    .side-panther,
+    .side-hangyodon{
+      position:fixed;
+      top:50%;
+      transform:translateY(-50%);
+      width:420px;
+      opacity:.9;
+      z-index:1;
+      pointer-events:auto;
+      user-select:none;
+      transition: transform .25s ease, opacity .25s ease;
+      display:none;
+    }
+
+    /* 桌機版：左右各一隻，往中間看 */
+    .side-panther.left{left:2.5%;transform:translateY(-50%) scaleX(1);}
+    .side-panther.right{right:2.5%;transform:translateY(-50%) scaleX(1);}
+
+    .side-hangyodon.left{left:2.5%;transform:translateY(-50%) scaleX(-1);}
+    .side-hangyodon.right{right:2.5%;transform:translateY(-50%) scaleX(-1);}
+
+    html[data-style="panther"] .side-panther{display:block;}
+    html[data-style="hangyodon"] .side-hangyodon{display:block;}
+
+    /* 手機 / 平板：保留右邊大圖並置中 */
+    @media (max-width: 900px){
+
+      body{
+        background:var(--bg);
+      }
+
+      /* 左邊角色一定關閉（避免 data-style 覆蓋） */
+      html[data-style="panther"] .side-panther.left,
+      html[data-style="hangyodon"] .side-hangyodon.left{
+        display:none !important;
+      }
+
+      /* 右邊角色置中顯示 */
+      html[data-style="panther"] .side-panther.right,
+      html[data-style="hangyodon"] .side-hangyodon.right{
+        display:block !important;
+        position:fixed !important;
+        left:50% !important;
+        right:auto !important;
+        top:50% !important;
+        transform:translate(-50%, -50%) !important;
+        width:260px;
+        opacity:0.9;
+        pointer-events:none;
+        z-index:1;
+      }
+
+      .page{
+        padding-top:16px;
+      }
+
+      .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+      }
+
+      .brand-main{
+        font-size:17px;
+        letter-spacing:.10em;
+      }
+
+      .brand-sub{
+        font-size:12px;
+      }
+
+      .top-meta{
+        width:100%;
+        justify-content:flex-start;
+        gap:6px;
+        flex-wrap:wrap;
+      }
+
+      .top-meta .pill,
+      .top-meta .btn-ghost{
+        flex-shrink:0;
+      }
+    }
+
+    .side-panther.left:hover,
+    .side-hangyodon.left:hover{
+      transform:translateY(-50%) translateX(-4px) scaleX(1);
+      opacity:1;
+    }
+    .side-panther.right:hover,
+    .side-hangyodon.right:hover{
+      transform:translateY(-50%) translateX(4px) scaleX(-1);
+      opacity:1;
+    }
+
+    /* 共用選單與操作列 */
+    .line-select{
+      font-size:13px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid #d1d5db;
+      background:#fff;
+      color:#111827;
+      cursor:pointer;
+      transition:all .15s ease;
+    }
+    .line-select:hover{
+      border-color:#2563eb;
+      box-shadow:0 0 0 2px rgba(37,99,235,.14);
+    }
+    html[data-theme="dark"] .line-select{
+      background:#020617;
+      border-color:#1f2937;
+      color:var(--text);
+    }
+
+    .action-row{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+    .btn-secondary{
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid #c7d2fe;
+      background:#eef2ff;
+      color:#1d4ed8;
+      font-size:12px;
+      cursor:pointer;
+      transition:background .18s ease,border-color .18s ease,color .18s ease;
+    }
+    .btn-secondary:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+    .btn-secondary:hover:not(:disabled){
+      background:#e0e7ff;
+      border-color:#a5b4fc;
+    }
+    html[data-theme="dark"] .btn-secondary{
+      background:rgba(59,130,246,.15);
+      border-color:#1d4ed8;
+      color:#bfdbfe;
+    }
+    html[data-theme="dark"] .btn-secondary:hover:not(:disabled){
+      background:rgba(59,130,246,.3);
+    }
+
+    .no-result{
+      margin-top:18px;
+      font-size:12px;
+      color:var(--text-soft);
+      display:none;
+    }
+
+    /* 右邊 iframe 區域 */
+    .view{
+      display:none;
+    }
+    .view.active{
+      display:block;
+    }
+
+    .iframe-wrap{
+      background:var(--card-bg);
+      border-radius:var(--radius-xl);
+      border:1px solid var(--border-subtle);
+      box-shadow:var(--shadow-soft-sm);
+      overflow:hidden;
+      min-height:400px;
+    }
+    .iframe-wrap iframe{
+      width:100%;
+      height:70vh;
+      min-height:400px;
+      border:0;
+      display:block;
+      background:#111827;
+    }
+
+    @media(max-width:900px){
+      .iframe-wrap iframe{
+        height:65vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- side characters -->
+  <img src="pinkpanther1.png" alt="Pink Panther Left" class="side-panther left" />
+  <img src="pinkpanther2.png" alt="Pink Panther Right" class="side-panther right" />
+
+  <img src="hangyodon1.png" alt="Hangyodon Left" class="side-hangyodon left" />
+  <img src="hangyodon2.png" alt="Hangyodon Right" class="side-hangyodon right" />
+
+  <div class="page">
+    <div class="topbar">
+      <div class="brand-wrap">
+        <!-- src 會被 JS 替換成對應主題圖（panther / hangyodon）-->
+        <img src="" alt="Theme Mascot" class="mascot" />
+        <div>
+          <div class="brand-main">MAINTENANCE SMART</div>
+          <div class="brand-sub">Smarter maintenance, easier life.</div>
+        </div>
+      </div>
+      <div class="top-meta">
+        <div class="pill designer">
+          <span class="pill-label">Designed by</span>
+          <span class="pill-designer-strong">Benjamin Lin</span>
+        </div>
+        <div class="pill">
+          <span class="pill-label">Modified Date</span>
+          <span class="pill-strong" id="modDate">Checking…</span>
+        </div>
+        <button id="themeToggle" class="btn-ghost" type="button" aria-label="Toggle theme">
+          <span class="btn-ghost-icon" id="themeIcon">🌞</span>
+          <span id="themeLabel">Theme</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="workspace">
+      <!-- 左側小列選單 -->
+      <nav class="mini-nav" aria-label="Module navigation">
+        <button class="mini-nav-item active" data-view="home" data-label="Modules" data-sub="Choose a page below. Each is an independent system.">
+          <span class="icon">🏠</span>
+          <span>Home</span>
+        </button>
+        <button class="mini-nav-item" data-view="pc" data-src="PC Manager.html" data-label="PC Manager" data-sub="BOPP1 computer asset list from inventory.csv.">
+          <span class="icon">💻</span>
+          <span>PC</span>
+        </button>
+        <button class="mini-nav-item" data-view="schem" data-src="Line-1-F13-Schematic.html" data-label="Line Schematic" data-sub="View line electrical / PLC schematic PDFs.">
+          <span class="icon">📊</span>
+          <span>Schem</span>
+        </button>
+        <button class="mini-nav-item" data-view="backup" data-src="Program-Backup-Line-1.html" data-label="Program Backup" data-sub="PLC / SCADA backup pages by line and system.">
+          <span class="icon">📁</span>
+          <span>Backup</span>
+        </button>
+        <button class="mini-nav-item" data-view="calib" data-src="Calibration-Portal.html" data-label="Calibration SOP" data-sub="Step-by-step calibration procedures.">
+          <span class="icon">🧪</span>
+          <span>Calib</span>
+        </button>
+      </nav>
+
+      <!-- 右側內容區 -->
+      <div class="workspace-main">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title" id="wsTitle">Modules</h2>
+            <p class="section-sub" id="wsSub">
+              Choose a page below. Each is an independent system.
+            </p>
+          </div>
+          <div class="section-tools" id="wsTools">
+            <input
+              id="moduleSearch"
+              class="search-input"
+              type="search"
+              placeholder="Search modules… (e.g. PC, Schematic)"
+              aria-label="Search modules"
+            />
+            <div class="search-hint">Filter by module name or description.</div>
+          </div>
+        </div>
+
+        <!-- Home 視圖：原本 Modules 卡片 -->
+        <div class="view active" id="view-home">
+          <div class="grid" id="moduleGrid">
+            <!-- PC Manager -->
+            <a class="card" href="PC Manager.html" data-keywords="pc manager computer asset inventory bopp1 list csv">
+              <div class="card-label">BOPP1</div>
+              <h3 class="card-title">PC Manager</h3>
+              <p class="card-desc">View computer asset list from inventory.csv.</p>
+              <div class="card-meta">CSV-driven • Printable</div>
+              <button class="enter-btn" type="button">Enter ↗</button>
+            </a>
+
+            <!-- Line Schematic -->
+            <div class="card" data-keywords="line schematic production electrical pdf f12 f13 f16 f201">
+              <div class="card-label">Production</div>
+              <h3 class="card-title">Line Schematic</h3>
+              <p class="card-desc">Select a Line and its area to open the schematic.</p>
+              <div class="card-meta">Interactive • PDF-based</div>
+
+              <div class="action-row">
+                <select id="schemLine" class="line-select">
+                  <option value="">Select Line</option>
+                  <option>Line-1</option>
+                  <option>Line-2</option>
+                  <option>Line-3</option>
+                  <option>Line-4</option>
+                </select>
+
+                <select id="schemArea" class="line-select">
+                  <option value="">Select Area</option>
+                  <option>F12</option>
+                  <option>F13</option>
+                  <option>F16</option>
+                  <option>F201</option>
+                </select>
+
+                <button id="schemGo" class="btn-secondary" type="button" disabled>Go ↗</button>
+              </div>
+            </div>
+
+            <!-- Program Backup -->
+            <div class="card" data-keywords="program backup plc scada docs automation main blending loading grinder tdo winder mdo">
+              <div class="card-label">Automation</div>
+              <h3 class="card-title">Program Backup</h3>
+              <p class="card-desc">Select a Line and a system to open its backup page.</p>
+              <div class="card-meta">PLC / SCADA • Docs</div>
+
+              <div class="action-row">
+                <select id="pbLine" class="line-select">
+                  <option value="">Select Line</option>
+                  <option>Line-1</option>
+                  <option>Line-2</option>
+                  <option>Line-3</option>
+                  <option>Line-4</option>
+                </select>
+
+                <select id="pbSys" class="line-select">
+                  <option value="">Select System</option>
+                  <option>SCADA</option>
+                  <option>F12</option>
+                  <option>F16</option>
+                  <option>F13</option>
+                  <option>F201</option>
+                  <option>Main blending</option>
+                  <option>Main Loading</option>
+                  <option>Softal Treater</option>
+                  <option>TDO Bruckpanel</option>
+                  <option>Winder Carriage Bruckpanel</option>
+                  <option>MDO Oil Skid</option>
+                  <option>Grinder</option>
+                </select>
+
+                <button id="pbGo" class="btn-secondary" type="button" disabled>Go ↗</button>
+              </div>
+            </div>
+
+            <!-- Calibration -->
+            <div class="card" data-keywords="calibration procedure maintenance hopper weight winder contact roll line speed sop">
+              <div class="card-label">Maintenance</div>
+              <h3 class="card-title">Calibration Procedure</h3>
+              <p class="card-desc">Open the step-by-step calibration SOP.</p>
+              <div class="card-meta">SOP • PDF/HTML</div>
+
+              <div class="action-row">
+                <select id="calProc" class="line-select">
+                  <option value="">Select Procedure</option>
+                  <option>Main Hopper Weight Calibration</option>
+                  <option>Winder Contact Roll Calibration</option>
+                  <option>Line Speed Calibration</option>
+                </select>
+
+                <button id="calGo" class="btn-secondary" type="button" disabled>Go ↗</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="noResult" class="no-result">No modules found. Try another keyword.</div>
+        </div>
+
+        <!-- iframe 視圖：PC / Schematic / Backup / Calibration -->
+        <div class="view" id="view-frame">
+          <div class="iframe-wrap">
+            <iframe id="mainFrame" title="Module view"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Init light/dark theme from localStorage + system ---
+    (function initTheme(){
+      const stored = localStorage.getItem('ms-theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = stored || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+
+    // GitHub last commit datetime
+    (async function(){
+      const el = document.getElementById('modDate');
+      const owner  = "lg920731-collab";
+      const repo   = "it-inventory";
+      const branch = "main";
+      const url = `https://api.github.com/repos/${owner}/${repo}/commits/${branch}`;
+
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("GitHub API error");
+        const data = await res.json();
+        const dateStr = data?.commit?.author?.date;
+        if (!dateStr) throw new Error("No date");
+        const d = new Date(dateStr);
+        el.textContent = d.toLocaleString([], {
+          year:'numeric', month:'2-digit', day:'2-digit',
+          hour:'2-digit', minute:'2-digit'
+        });
+      } catch (err) {
+        console.error("GitHub commit time error:", err);
+        const d = new Date(document.lastModified);
+        el.textContent = !isNaN(d)
+          ? d.toLocaleString([], {
+              year:'numeric', month:'2-digit', day:'2-digit',
+              hour:'2-digit', minute:'2-digit'
+            })
+          : "N/A";
+      }
+    })();
+
+    function slugify(s){
+      return s.trim().replace(/\s+/g,'-').replace(/[^A-Za-z0-9\-]/g,'')
+    }
+
+    /* Line Schematic (在 home 視圖用) */
+    const schemLine=document.getElementById('schemLine');
+    const schemArea=document.getElementById('schemArea');
+    const schemGo=document.getElementById('schemGo');
+    function updateSchemBtn(){schemGo.disabled=!(schemLine.value&&schemArea.value)}
+    schemLine && schemLine.addEventListener('change',updateSchemBtn);
+    schemArea && schemArea.addEventListener('change',updateSchemBtn);
+    schemGo && schemGo.addEventListener('click',()=>{
+      window.location.href=`${schemLine.value}-${schemArea.value}-Schematic.html`;
+    });
+
+    /* Program Backup (在 home 視圖用) */
+    const pbLine=document.getElementById('pbLine');
+    const pbSys=document.getElementById('pbSys');
+    const pbGo=document.getElementById('pbGo');
+    function updatePbBtn(){pbGo.disabled=!(pbLine.value&&pbSys.value)}
+    pbLine && pbLine.addEventListener('change',updatePbBtn);
+    pbSys && pbSys.addEventListener('change',updatePbBtn);
+    pbGo && pbGo.addEventListener('click',()=>{
+      window.location.href=`Program-Backup-${pbLine.value}-${slugify(pbSys.value)}.html`;
+    });
+
+    /* Calibration Procedure (在 home 視圖用) */
+    const calProc=document.getElementById('calProc');
+    const calGo=document.getElementById('calGo');
+    calProc && calProc.addEventListener('change',()=>{calGo.disabled=!calProc.value});
+    calGo && calGo.addEventListener('click',()=>{
+      window.location.href=`Calibration-${slugify(calProc.value)}.html`;
+    });
+
+    /* Theme Toggle (light/dark) */
+    (function(){
+      const btn = document.getElementById('themeToggle');
+      const icon = document.getElementById('themeIcon');
+
+      function applyIcon(theme){
+        icon.textContent = theme === 'dark' ? '🌙' : '🌞';
+      }
+
+      function toggleTheme(){
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('ms-theme', next);
+        applyIcon(next);
+      }
+
+      const initial = document.documentElement.getAttribute('data-theme') || 'light';
+      applyIcon(initial);
+      btn.addEventListener('click', toggleTheme);
+    })();
+
+    /* Module Search Filter (只影響 home 視圖卡片) */
+    (function(){
+      const input = document.getElementById('moduleSearch');
+      const grid = document.getElementById('moduleGrid');
+      if (!input || !grid) return;
+      const cards = Array.from(grid.querySelectorAll('.card'));
+      const noResult = document.getElementById('noResult');
+
+      function normalize(str){return str.toLowerCase();}
+
+      function filterModules(){
+        const query = normalize(input.value.trim());
+        let visibleCount = 0;
+
+        if (!query){
+          cards.forEach(card => { card.style.display = ''; });
+          noResult.style.display = 'none';
+          return;
+        }
+
+        cards.forEach(card => {
+          const text = (card.getAttribute('data-keywords') || card.textContent || '');
+          const match = normalize(text).includes(query);
+          card.style.display = match ? '' : 'none';
+          if (match) visibleCount++;
+        });
+
+        noResult.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+
+      input.addEventListener('input', filterModules);
+    })();
+
+    /* 左側 mini-nav 切換 view + iframe */
+    (function(){
+      const navItems = document.querySelectorAll('.mini-nav-item');
+      const viewHome = document.getElementById('view-home');
+      const viewFrame = document.getElementById('view-frame');
+      const frame = document.getElementById('mainFrame');
+      const wsTitle = document.getElementById('wsTitle');
+      const wsSub = document.getElementById('wsSub');
+      const wsTools = document.getElementById('wsTools');
+
+      function setActive(btn){
+        navItems.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+
+      function showHome(btn){
+        setActive(btn);
+        viewHome.classList.add('active');
+        viewFrame.classList.remove('active');
+        if (frame) frame.removeAttribute('src');
+        wsTitle.textContent = btn.dataset.label || 'Modules';
+        wsSub.textContent = btn.dataset.sub || '';
+        wsTools.style.display = '';
+      }
+
+      function showFrame(btn){
+        setActive(btn);
+        const src = btn.dataset.src;
+        if (!src || !frame) return;
+        viewHome.classList.remove('active');
+        viewFrame.classList.add('active');
+        frame.src = src;
+        wsTitle.textContent = btn.dataset.label || 'Module';
+        wsSub.textContent = btn.dataset.sub || '';
+        wsTools.style.display = 'none';
+      }
+
+      navItems.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const view = btn.dataset.view;
+          if (view === 'home'){
+            showHome(btn);
+          } else {
+            showFrame(btn);
+          }
+        });
+      });
+    })();
+
+    // --- Style Theme (blue / panther / hangyodon) – 點左上 icon 切換 ---
+    (function(){
+      const STYLE_KEY = 'ms-style';
+      const root = document.documentElement;
+      const mascot = document.querySelector('.mascot');
+      const styles = ['blue', 'panther', 'hangyodon'];
+
+      const themeConfig = {
+        blue: {
+          mascotSrc: '',              // 藍色主題用 CSS 背景，不用 src
+          mascotAlt: 'Blue theme'
+        },
+        panther: {
+          mascotSrc: 'pinkpanther.png',
+          mascotAlt: 'Pink Panther theme'
+        },
+        hangyodon: {
+          mascotSrc: 'hangyodon.png',
+          mascotAlt: 'Hangyodon theme'
+        }
+      };
+
+      function applyStyle(style){
+        const s = themeConfig[style] ? style : 'blue';
+        root.setAttribute('data-style', s);
+        const cfg = themeConfig[s];
+        if (mascot){
+          if (s === 'blue'){
+            mascot.removeAttribute('src'); // 顯示 CSS 漸層方塊
+          }else{
+            mascot.src = cfg.mascotSrc;    // 其他主題顯示圖片
+          }
+          mascot.alt = cfg.mascotAlt;
+        }
+        localStorage.setItem(STYLE_KEY, s);
+      }
+
+      function cycleStyle(){
+        const current = root.getAttribute('data-style') || 'blue';
+        const idx = styles.indexOf(current);
+        const next = styles[(idx + 1) % styles.length];
+        applyStyle(next);
+      }
+
+      const saved = localStorage.getItem(STYLE_KEY) || 'blue';
+      applyStyle(saved);
+
+      if (mascot){
+        mascot.style.cursor = 'pointer';
+        mascot.title = 'Click to change style';
+        mascot.addEventListener('click', cycleStyle);
+      }
+    })();
+  </script>
+</body>
+</html>
