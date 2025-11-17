@@ -34,24 +34,24 @@
       --shadow-soft-md:0 16px 40px rgba(0,0,0,.75);
     }
 
+    /* style 主題底色（index 用純色，不用圖） */
+    html[data-style="panther"]{
+      --bg:#ffe4ec;   /* 淡粉 */
+    }
+    html[data-style="hangyodon"]{
+      --bg:#dbeafe;   /* 淡藍 */
+    }
+
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
       font-size:15px;
       color:var(--text);
-      background:radial-gradient(circle at top,rgba(129,140,248,.16),transparent),var(--bg);
+      background:var(--bg); /* 純顏色背景 */
       min-height:100vh;
       overflow-x:hidden;
       transition:background .25s ease,color .25s ease;
-    }
-
-    /* style 主題背景 */
-    html[data-style="panther"] body{
-      background:radial-gradient(circle at top,rgba(244,114,182,.28),transparent),var(--bg);
-    }
-    html[data-style="hangyodon"] body{
-      background:radial-gradient(circle at top,rgba(56,189,248,.35),transparent),var(--bg);
     }
 
     .page{
@@ -83,7 +83,7 @@
       width:28px;
       height:28px;
       border-radius:9px;
-      background:radial-gradient(circle at 30% 0,#bfdbfe,#2563eb);
+      background:radial-gradient(circle at 30% 0,#bfdbfe,#2563eb); /* blue 模式的漸層方塊 */
       box-shadow:0 0 10px rgba(37,99,235,0.35);
       flex-shrink:0;
       object-fit:cover;
@@ -278,47 +278,45 @@
     }
 
     /* 手機：左邊維持一小列 icon 選單，右邊呈現內容 */
-@media (max-width:900px){
-  .workspace{
-    flex-direction:row;      /* 手機也保持左右排版 */
-    gap:10px;
-  }
+    @media (max-width:900px){
+      .workspace{
+        flex-direction:row;
+        gap:10px;
+      }
 
-  .sidebar{
-    width:64px;              /* 變成窄窄一條 */
-    min-width:64px;
-    padding:8px 4px 10px;
-    flex-direction:column;
-    align-items:center;
-  }
+      .sidebar{
+        width:64px;
+        min-width:64px;
+        padding:8px 4px 10px;
+        flex-direction:column;
+        align-items:center;
+      }
 
-  .sidebar.collapsed{
-    width:56px;
-    min-width:56px;
-  }
+      .sidebar.collapsed{
+        width:56px;
+        min-width:56px;
+      }
 
-  /* 手機就不要再用收合按鈕了，可以直接隱藏 */
-  .sidebar-toggle{
-    display:none;
-  }
+      .sidebar-toggle{
+        display:none;
+      }
 
-  .nav-list{
-    flex-direction:column;
-    gap:6px;
-    width:100%;
-  }
+      .nav-list{
+        flex-direction:column;
+        gap:6px;
+        width:100%;
+      }
 
-  .nav-item-btn{
-    justify-content:center;
-    padding:6px 4px;
-    font-size:12px;
-  }
+      .nav-item-btn{
+        justify-content:center;
+        padding:6px 4px;
+        font-size:12px;
+      }
 
-  /* 手機只顯示 icon，比較省空間 */
-  .nav-label{
-    display:none;
-  }
-}
+      .nav-label{
+        display:none;
+      }
+    }
 
     /* 右側內容 */
     .main{
@@ -355,36 +353,10 @@
       background:#111827;
     }
 
-    /* 置中角色背景：只留一隻 */
-    .theme-bg{
-      position:fixed;
-      left:50%;
-      top:50%;
-      transform:translate(-50%,-50%);
-      width:520px;
-      max-width:90vw;
-      opacity:0.9;
-      z-index:0;
-      pointer-events:none;
-      user-select:none;
-      display:none;
-    }
-    html[data-style="panther"] .theme-bg-panther{
-      display:block;
-    }
-    html[data-style="hangyodon"] .theme-bg-hangyodon{
-      display:block;
-    }
-
+    /* 手機上：topbar & iframe 高度微調 */
     @media (max-width:900px){
-      /* 手機：只保留純色背景 + 中央圖片，拿掉漸層，畫面比較乾淨 */
       body{
         background:var(--bg);
-      }
-
-      .theme-bg{
-        width:260px;
-        opacity:0.9;
       }
 
       .page{
@@ -420,7 +392,6 @@
         flex-shrink:0;
       }
 
-      /* 手機 iframe 高度微調，留空間給 topbar + 橫列選單 */
       .iframe-wrap{
         height:calc(100vh - 220px);
       }
@@ -428,11 +399,6 @@
   </style>
 </head>
 <body>
-
-  <!-- 中央主題角色，只留一隻 -->
-  <img src="pinkpanther2.png" alt="Pink Panther" class="theme-bg theme-bg-panther" />
-  <img src="hangyodon2.png" alt="Hangyodon" class="theme-bg theme-bg-hangyodon" />
-
   <div class="page">
     <div class="topbar">
       <div class="brand-wrap">
@@ -564,6 +530,28 @@
       }
     })();
 
+    // ---- 子頁面同步主頁 style ----
+    (function syncStyleToIframe(){
+      const frame = document.getElementById("mainFrame");
+
+      function applyStyleToFrame(){
+        if (!frame || !frame.contentDocument) return;
+        const style = document.documentElement.getAttribute("data-style") || "blue";
+        const frameHtml = frame.contentDocument.documentElement;
+        frameHtml.setAttribute("data-style", style);
+      }
+
+      if (frame){
+        frame.addEventListener("load", function(){
+          // 等子頁面載入完成再套用
+          setTimeout(applyStyleToFrame, 30);
+        });
+      }
+
+      // 給 theme 切換呼叫
+      window._msSyncFrameStyle = applyStyleToFrame;
+    })();
+
     /* Theme Toggle (light/dark) */
     (function(){
       const btn = document.getElementById('themeToggle');
@@ -653,6 +641,11 @@
           mascot.alt = cfg.mascotAlt;
         }
         localStorage.setItem(STYLE_KEY, s);
+
+        // 同步給 iframe
+        if (window._msSyncFrameStyle){
+          setTimeout(window._msSyncFrameStyle, 30);
+        }
       }
 
       function cycleStyle(){
