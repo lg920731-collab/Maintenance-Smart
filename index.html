@@ -432,78 +432,49 @@
   </div>
 
   <script>
-   // GitHub last commit datetime（相容舊瀏覽器版本）
-(function () {
-  var el = document.getElementById('modDate');
-  if (!el) return;
+    // GitHub last commit datetime
+(async function(){
+  const el = document.getElementById('modDate');
+  if (!el) return;   // ← 安全保護：如果 HTML 裡沒有 modDate，就不要繼續跑
 
-  var owner  = "lg920731-collab";
-  var repo   = "it-inventory";
-  var branch = "main";
-  var url    = "https://api.github.com/repos/" + owner + "/" + repo + "/commits/" + branch;
+  const owner  = "lg920731-collab";
+  const repo   = "it-inventory";
+  const branch = "main";
+  const url = `https://api.github.com/repos/${owner}/${repo}/commits/${branch}`;
 
-  // 備援：用 HTML 檔最後修改時間
-  function setFromDocumentLastModified() {
-    var d = new Date(document.lastModified);
-    if (isNaN(d.getTime())) {
-      el.textContent = "N/A";
-      return;
-    }
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("GitHub API error: " + res.status);
+
+    const data = await res.json();
+    const dateStr = data?.commit?.author?.date;
+    if (!dateStr) throw new Error("No date in response");
+
+    const d = new Date(dateStr);
     el.textContent = d.toLocaleString([], {
-      year:   'numeric',
-      month:  '2-digit',
-      day:    '2-digit',
-      hour:   '2-digit',
-      minute: '2-digit'
+      year:'numeric',
+      month:'2-digit',
+      day:'2-digit',
+      hour:'2-digit',
+      minute:'2-digit'
     });
+
+  } catch (err) {
+    console.error("GitHub commit time error:", err);
+
+    // 備援方案：用本地 HTML 最後修改時間
+    const d = new Date(document.lastModified);
+    el.textContent = !isNaN(d)
+      ? d.toLocaleString([], {
+          year:'numeric',
+          month:'2-digit',
+          day:'2-digit',
+          hour:'2-digit',
+          minute:'2-digit'
+        })
+      : "N/A";
   }
-
-  // 舊瀏覽器沒有 fetch → 直接用備援
-  if (!window.fetch) {
-    setFromDocumentLastModified();
-    return;
-  }
-
-  // 用 GitHub API 讀取 branch 最後一次 commit 時間
-  fetch(url)
-    .then(function (res) {
-      if (!res.ok) {
-        throw new Error("GitHub API error: " + res.status);
-      }
-      return res.json();
-    })
-    .then(function (data) {
-      // 避免 ?. 造成舊瀏覽器語法錯誤，改成一層一層判斷
-      var dateStr =
-        data &&
-        data.commit &&
-        data.commit.author &&
-        data.commit.author.date;
-
-      if (!dateStr) {
-        throw new Error("No date in response");
-      }
-
-      var d = new Date(dateStr);
-      if (isNaN(d.getTime())) {
-        throw new Error("Invalid date from GitHub");
-      }
-
-      el.textContent = d.toLocaleString([], {
-        year:   'numeric',
-        month:  '2-digit',
-        day:    '2-digit',
-        hour:   '2-digit',
-        minute: '2-digit'
-      });
-    })
-    .catch(function (err) {
-      // 任何錯誤都退回用 document.lastModified
-      console.log("GitHub commit time error:", err);
-      setFromDocumentLastModified();
-    });
 })();
-
 
 
     // ---- 子頁面同步主頁 style ----
