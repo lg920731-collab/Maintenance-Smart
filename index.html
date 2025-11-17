@@ -277,44 +277,48 @@
       padding-inline:8px;
     }
 
-    /* 手機：側邊欄改成上方橫列 */
-    @media (max-width:900px){
-      .workspace{
-        flex-direction:column;
-        gap:10px;
-      }
-      .sidebar{
-        width:100%;
-        min-width:100%;
-        flex-direction:row;
-        align-items:center;
-        padding:6px 8px;
-      }
-      .sidebar.collapsed{
-        width:100%;
-        min-width:100%;
-      }
-      .sidebar-toggle{
-        margin:0 6px 0 0;
-      }
-      .nav-list{
-        flex-direction:row;
-        gap:4px;
-        flex:1;
-      }
-      .nav-item-btn{
-        flex:1;
-        justify-content:center;
-        padding:6px 8px;
-        font-size:12px;
-      }
-      .nav-label{
-        display:inline;
-      }
-      .sidebar.collapsed .nav-label{
-        display:inline;
-      }
-    }
+    /* 手機：左邊維持一小列 icon 選單，右邊呈現內容 */
+@media (max-width:900px){
+  .workspace{
+    flex-direction:row;      /* 手機也保持左右排版 */
+    gap:10px;
+  }
+
+  .sidebar{
+    width:64px;              /* 變成窄窄一條 */
+    min-width:64px;
+    padding:8px 4px 10px;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .sidebar.collapsed{
+    width:56px;
+    min-width:56px;
+  }
+
+  /* 手機就不要再用收合按鈕了，可以直接隱藏 */
+  .sidebar-toggle{
+    display:none;
+  }
+
+  .nav-list{
+    flex-direction:column;
+    gap:6px;
+    width:100%;
+  }
+
+  .nav-item-btn{
+    justify-content:center;
+    padding:6px 4px;
+    font-size:12px;
+  }
+
+  /* 手機只顯示 icon，比較省空間 */
+  .nav-label{
+    display:none;
+  }
+}
 
     /* 右側內容 */
     .main{
