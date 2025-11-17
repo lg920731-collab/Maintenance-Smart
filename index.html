@@ -63,7 +63,6 @@
       z-index:2;
     }
 
-
     .topbar{
       background:var(--card-bg);
       padding:18px 20px;
@@ -282,6 +281,7 @@
     @media (max-width:900px){
       .workspace{
         flex-direction:column;
+        gap:10px;
       }
       .sidebar{
         width:100%;
@@ -350,11 +350,6 @@
       display:block;
       background:#111827;
     }
-    @media (max-width:900px){
-      .iframe-wrap{
-       height:calc(100vh - 190px); /* 手機頭部比較高就抓大一點 */
-      }
-    }
 
     /* 置中角色背景：只留一隻 */
     .theme-bg{
@@ -376,7 +371,13 @@
     html[data-style="hangyodon"] .theme-bg-hangyodon{
       display:block;
     }
+
     @media (max-width:900px){
+      /* 手機：只保留純色背景 + 中央圖片，拿掉漸層，畫面比較乾淨 */
+      body{
+        background:var(--bg);
+      }
+
       .theme-bg{
         width:260px;
         opacity:0.9;
@@ -384,12 +385,14 @@
 
       .page{
         padding-top:16px;
+        padding-bottom:24px;
       }
 
       .topbar{
         flex-direction:column;
         align-items:flex-start;
-        gap:10px;
+        gap:8px;
+        padding:14px 14px;
       }
 
       .brand-main{
@@ -411,6 +414,11 @@
       .top-meta .pill,
       .top-meta .btn-ghost{
         flex-shrink:0;
+      }
+
+      /* 手機 iframe 高度微調，留空間給 topbar + 橫列選單 */
+      .iframe-wrap{
+        height:calc(100vh - 220px);
       }
     }
   </style>
