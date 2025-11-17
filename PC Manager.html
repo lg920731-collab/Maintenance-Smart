@@ -433,6 +433,9 @@
   <img src="hangyodon2.png" alt="Hangyodon Right" class="side-hangyodon right">
 
   <div class="page">
+    <!-- 給 JS 用的 hidden lastSync，畫面不顯示 -->
+    <span id="lastSync" style="display:none"></span>
+
     <!-- Filters (collapsible) -->
     <div class="card">
       <div class="filter-header" onclick="toggleFilters()">
@@ -442,9 +445,6 @@
       <div class="card-subtitle">
         This page is read-only. To update data, edit the Excel file and export
         <strong>inventory.csv</strong> to overwrite the existing file.
-      </div>
-      <div class="card-subtitle">
-        Last update: <span id="lastSync">—</span> · Managed by Benjamin Lin
       </div>
 
       <div class="filters collapsible open" id="filtersBox">
@@ -514,7 +514,7 @@
       renderTable();
     } catch (e) {
       console.error(e);
-      lastSyncEl.textContent = "Loading error (please check inventory.csv)";
+      if (lastSyncEl) lastSyncEl.textContent = "Loading error (please check inventory.csv)";
       tbody.innerHTML = "";
       countInfoEl.textContent = "Total: 0 records";
     }
@@ -564,15 +564,17 @@
 
   function updateLastSync() {
     if (!computers.length) {
-      lastSyncEl.textContent = "no data";
+      if (lastSyncEl) lastSyncEl.textContent = "no data";
       return;
     }
     let latest = "0000-00-00";
     computers.forEach(c => {
       if (c.last_update && c.last_update > latest) latest = c.last_update;
     });
-    lastSyncEl.textContent =
-      latest !== "0000-00-00" ? latest : "Managed by Excel";
+    if (lastSyncEl) {
+      lastSyncEl.textContent =
+        latest !== "0000-00-00" ? latest : "Managed by Excel";
+    }
   }
 
   function renderTable() {
