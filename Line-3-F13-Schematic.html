@@ -5,13 +5,9 @@
   <title>Line 3 Schematic | Maintenance Smart</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- 保留 style（blue / panther / hangyodon），移除 dark mode -->
   <script>
     (function () {
-      const storedTheme = localStorage.getItem('ms-theme');
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = storedTheme || (prefersDark ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', theme);
-
       const style = localStorage.getItem('ms-style') || 'blue';
       document.documentElement.setAttribute('data-style', style);
     })();
@@ -28,17 +24,8 @@
       --text-soft: #6b7280;
     }
 
-    html[data-theme="dark"]{
-      --bg:#020617;
-      --card-bg:#020617;
-      --border-subtle:#1f2937;
-      --accent:#60a5fa;
-      --accent-hover:#3b82f6;
-      --text:#e5e7eb;
-      --text-soft:#9ca3af;
-    }
-
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -55,6 +42,7 @@
       transition: background .25s ease, color .25s ease;
     }
 
+    /* style 背景—與主頁同步 */
     html[data-style="panther"] body{
       background:
         radial-gradient(circle at top,rgba(244,114,182,.28),transparent),
@@ -66,26 +54,50 @@
         var(--bg);
     }
 
+    /* 角色背景 */
     .side-panther,
     .side-hangyodon{
-      position:fixed;top:50%;transform:translateY(-50%);
-      width:320px;opacity:.9;z-index:1;pointer-events:none;user-select:none;
+      position:fixed;
+      top:50%;
+      transform:translateY(-50%);
+      width:320px;
+      opacity:.9;
+      z-index:1;
+      pointer-events:none;
+      user-select:none;
       transition: transform .25s ease, opacity .25s ease;
       display:none;
     }
-    .side-panther.left{left:1.5%;transform:translateY(-50%) scaleX(1)}
-    .side-panther.right{right:1.5%;transform:translateY(-50%) scaleX(1)}
-    .side-hangyodon.left{left:1.5%;transform:translateY(-50%) scaleX(-1)}
-    .side-hangyodon.right{right:1.5%;transform:translateY(-50%) scaleX(-1)}
+
+    .side-panther.left{left:1.5%; transform:translateY(-50%) scaleX(1);}
+    .side-panther.right{right:1.5%; transform:translateY(-50%) scaleX(1);}
+
+    .side-hangyodon.left{left:1.5%; transform:translateY(-50%) scaleX(-1);}
+    .side-hangyodon.right{right:1.5%; transform:translateY(-50%) scaleX(-1);}
 
     html[data-style="panther"] .side-panther{display:block;}
     html[data-style="hangyodon"] .side-hangyodon{display:block;}
 
-    @media (max-width: 1000px){
-      .side-panther,
-      .side-hangyodon{display:none}
+    @media (max-width: 900px){
+      html[data-style="panther"] .side-panther.left,
+      html[data-style="hangyodon"] .side-hangyodon.left{
+        display:none !important;
+      }
+
+      html[data-style="panther"] .side-panther.right,
+      html[data-style="hangyodon"] .side-hangyodon.right{
+        display:block !important;
+        position:fixed !important;
+        left:50% !important;
+        right:auto !important;
+        top:50% !important;
+        transform:translate(-50%, -50%) !important;
+        width:260px;
+        opacity:.7;
+      }
     }
 
+    /* Title */
     h1 {
       color: var(--accent);
       font-size: 22px;
@@ -103,6 +115,8 @@
       position: relative;
       z-index: 2;
     }
+
+    /* Button */
     .toolbar {
       display: flex;
       gap: 8px;
@@ -130,6 +144,8 @@
       box-shadow: 0 6px 14px rgba(37,99,235,0.25);
       border-color: var(--accent-hover);
     }
+
+    /* PDF Viewer */
     .viewer {
       width: 100%;
       max-width: 1100px;
@@ -144,7 +160,9 @@
       position: relative;
       z-index: 2;
     }
-    .viewer object {
+    .viewer object,
+    .viewer iframe,
+    .viewer embed {
       width: 100%;
       height: 100%;
       border: 0;
@@ -163,17 +181,19 @@
   </style>
 </head>
 <body>
-  <img src="pinkpanther1.png" alt="Pink Panther Left" class="side-panther left" />
-  <img src="pinkpanther2.png" alt="Pink Panther Right" class="side-panther right" />
-  <img src="hangyodon1.png" alt="Hangyodon Left" class="side-hangyodon left" />
-  <img src="hangyodon2.png" alt="Hangyodon Right" class="side-hangyodon right" />
+
+  <!-- 左右角色 -->
+  <img src="pinkpanther1.png" alt="" class="side-panther left">
+  <img src="pinkpanther2.png" alt="" class="side-panther right">
+
+  <img src="hangyodon1.png" alt="" class="side-hangyodon left">
+  <img src="hangyodon2.png" alt="" class="side-hangyodon right">
 
   <h1>Line 3 Schematic</h1>
   <div class="subtitle">Production Line 3 – Wiring and PLC Diagram</div>
 
   <div class="toolbar">
     <a class="btn" id="openNewTab" href="#" rel="noopener">Open PDF in New Tab ↗</a>
-    <a class="btn" href="index.html">← Back to Portal</a>
   </div>
 
   <div class="viewer" id="viewer">
@@ -189,9 +209,7 @@
     (function () {
       const pdfUrl = "Line-3-F13-Schematic.pdf";
 
-      const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent);
-      const openNewTab = document.getElementById('openNewTab');
-      openNewTab.href = pdfUrl;
+      document.getElementById('openNewTab').href = pdfUrl;
 
       const obj = document.getElementById('pdfObject');
       obj.addEventListener('error', () => {
@@ -200,5 +218,6 @@
       });
     })();
   </script>
+
 </body>
 </html>
