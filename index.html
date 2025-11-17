@@ -337,6 +337,23 @@
         min-width:0;
       }
 
+      /* 👉 長短調整：Modified / Theme / Modules / Designed */
+      .top-controls .modified-date{
+        padding:6px 18px;          /* Modified Date 長一點 */
+      }
+
+      #themeToggle{
+        padding:4px 8px;           /* Theme 短一點 */
+      }
+
+      #menuButton{
+        padding:5px 10px;          /* Modules 短一點 */
+      }
+
+      .top-controls .designer{
+        padding:7px 20px;          /* Designed by 長一點 */
+      }
+
       .nav-panel{
         position:relative;
         left:0;
@@ -349,31 +366,6 @@
       .iframe-wrap{
         height:calc(100vh - 220px);
       }
-       /* Modified Date – 長一點 */
-  .pill.modified-date{
-    padding:6px 18px;   /* 原本大約 5px 11px，這裡拉長 */
-  }
-
-  /* Theme – 短一點 */
-  #themeToggle{
-    padding:4px 8px;    /* 縮短整顆按鈕 */
-  }
-  #themeToggle .btn-ghost-icon{
-    font-size:13px;
-  }
-
-  /* Modules – 短一點 */
-  #menuButton{
-    padding:6px 10px;   /* 原本 7px 14px，改短 */
-  }
-  #menuButton .menu-label{
-    font-size:12px;     /* 字變小一點也更短 */
-  }
-
-  /* Designed by – 長一點 */
-  .pill.designer{
-    padding:7px 20px;  /* 原本 6px 13px，加長 */
-  }
     }
   </style>
 </head>
@@ -390,7 +382,7 @@
 
       <!-- 右側四顆：順序故意排成 Modified、Theme、Modules、Designed -->
       <div class="top-controls">
-        <div class="pill">
+        <div class="pill modified-date">
           <span class="pill-label">Modified Date</span>
           <span class="pill-strong" id="modDate">Checking…</span>
         </div>
