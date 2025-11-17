@@ -27,24 +27,165 @@
     html[data-style="hangyodon"]{
       --bg:#dbeafe;   /* 淡藍 */
     }
-  <script>
-    // Modified Date：直接使用這個 HTML 檔的最後修改時間
+   <script>
+    /* ---------- Modified Date：用這個 HTML 檔最後修改時間 ---------- */
     (function () {
-      const el = document.getElementById('modDate');
-      if (!el) return;
+      function updateModDate() {
+        var el = document.getElementById('modDate');
+        if (!el) return;
 
-      const d = new Date(document.lastModified);
-      el.textContent = d.toLocaleString([], {
-        year:   'numeric',
-        month:  '2-digit',
-        day:    '2-digit',
-        hour:   '2-digit',
-        minute: '2-digit'
-        // 如果你想看到秒數，就再加一行：
-        // second: '2-digit'
+        var d = new Date(document.lastModified);
+        if (isNaN(d.getTime())) {
+          el.textContent = 'N/A';
+          return;
+        }
+
+        el.textContent = d.toLocaleString([], {
+          year:   'numeric',
+          month:  '2-digit',
+          day:    '2-digit',
+          hour:   '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateModDate);
+      } else {
+        updateModDate();
+      }
+    })();
+
+
+    /* ---------- 子頁面同步主頁 style ---------- */
+    (function syncStyleToIframe(){
+      const frame = document.getElementById("mainFrame");
+
+      function applyStyleToFrame(){
+        if (!frame || !frame.contentDocument) return;
+        const style = document.documentElement.getAttribute("data-style") || "blue";
+        const frameHtml = frame.contentDocument.documentElement;
+        frameHtml.setAttribute("data-style", style);
+      }
+
+      if (frame){
+        frame.addEventListener("load", function(){
+          setTimeout(applyStyleToFrame, 30);
+        });
+      }
+
+      window._msSyncFrameStyle = applyStyleToFrame;
+    })();
+
+
+    /* ---------- Modules 面板開關 ---------- */
+    (function(){
+      const menuBtn = document.getElementById('menuButton');
+      const panel   = document.getElementById('navPanel');
+
+      function togglePanel(){
+        const isOpen = panel.classList.toggle('open');
+        menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }
+
+      if (menuBtn && panel){
+        menuBtn.addEventListener('click', togglePanel);
+      }
+
+      // 點擊頁面其他地方就關閉
+      document.addEventListener('click', (e)=>{
+        if (!panel.classList.contains('open')) return;
+        const insidePanel = panel.contains(e.target);
+        const insideBtn   = menuBtn.contains(e.target);
+        if (!insidePanel && !insideBtn){
+          panel.classList.remove('open');
+          menuBtn.setAttribute('aria-expanded','false');
+        }
       });
     })();
+
+
+    /* ---------- 切換模組 (iframe + 標題) ---------- */
+    (function(){
+      const frame   = document.getElementById('mainFrame');
+      const titleEl = document.getElementById('moduleTitle');
+      const subEl   = document.getElementById('moduleSub');
+      const buttons = document.querySelectorAll('.nav-item-btn');
+      const panel   = document.getElementById('navPanel');
+      const menuBtn = document.getElementById('menuButton');
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          buttons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const src   = btn.dataset.src;
+          const title = btn.dataset.title || 'Module';
+          const sub   = btn.dataset.sub || '';
+
+          if (frame && src) frame.src = src;
+          titleEl.textContent = title;
+          subEl.textContent   = sub;
+
+          // 點完選單自動收起 panel（特別是手機）
+          if (panel && panel.classList.contains('open')){
+            panel.classList.remove('open');
+            if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
+          }
+        });
+      });
+    })();
+
+
+    /* ---------- Style Theme (blue / panther / hangyodon) – 點左上 icon 切換 ---------- */
+    (function(){
+      const STYLE_KEY = 'ms-style';
+      const root   = document.documentElement;
+      const mascot = document.querySelector('.mascot');
+      const styles = ['blue', 'panther', 'hangyodon'];
+
+      const themeConfig = {
+        blue:     { bgImage: '' },                    // 藍色主題用 CSS 預設漸層方塊
+        panther:  { bgImage: 'url("pinkpanther.png")' },
+        hangyodon:{ bgImage: 'url("hangyodon.png")' }
+      };
+
+      function applyStyle(style){
+        const s   = themeConfig[style] ? style : 'blue';
+        const cfg = themeConfig[s];
+
+        root.setAttribute('data-style', s);
+
+        if (mascot){
+          // 有圖就套圖，沒有就維持藍色漸層方塊
+          mascot.style.backgroundImage = cfg.bgImage || '';
+        }
+
+        localStorage.setItem(STYLE_KEY, s);
+
+        if (window._msSyncFrameStyle){
+          setTimeout(window._msSyncFrameStyle, 30);
+        }
+      }
+
+      function cycleStyle(){
+        const current = root.getAttribute('data-style') || 'blue';
+        const idx     = styles.indexOf(current);
+        const next    = styles[(idx + 1) % styles.length];
+        applyStyle(next);
+      }
+
+      const saved = localStorage.getItem(STYLE_KEY) || 'blue';
+      applyStyle(saved);
+
+      if (mascot){
+        mascot.style.cursor = 'pointer';
+        mascot.title = 'Click to change style';
+        mascot.addEventListener('click', cycleStyle);
+      }
+    })();
   </script>
+
 
     *{box-sizing:border-box}
     body{
