@@ -5,16 +5,9 @@
   <title>Line 1 Schematic | Maintenance Smart</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- 先套用主頁儲存的主題 / 風格 -->
+  <!-- 保留 style（blue / panther / hangyodon），移除 dark mode -->
   <script>
     (function () {
-      // light / dark
-      const storedTheme = localStorage.getItem('ms-theme');
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = storedTheme || (prefersDark ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', theme);
-
-      // style: blue / panther / hangyodon
       const style = localStorage.getItem('ms-style') || 'blue';
       document.documentElement.setAttribute('data-style', style);
     })();
@@ -29,17 +22,6 @@
       --accent-hover: #1d4ed8;
       --text: #111827;
       --text-soft: #6b7280;
-    }
-
-    /* dark mode 變數 */
-    html[data-theme="dark"]{
-      --bg:#020617;
-      --card-bg:#020617;
-      --border-subtle:#1f2937;
-      --accent:#60a5fa;
-      --accent-hover:#3b82f6;
-      --text:#e5e7eb;
-      --text-soft:#9ca3af;
     }
 
     * { box-sizing: border-box; }
@@ -60,7 +42,7 @@
       transition: background .25s ease, color .25s ease;
     }
 
-    /* style 主題背景與側邊角色 */
+    /* style 背景—與主頁同步 */
     html[data-style="panther"] body{
       background:
         radial-gradient(circle at top,rgba(244,114,182,.28),transparent),
@@ -72,7 +54,7 @@
         var(--bg);
     }
 
-    /* 角色：桌機兩邊各一隻，小螢幕只留一隻置中 */
+    /* 角色背景 */
     .side-panther,
     .side-hangyodon{
       position:fixed;
@@ -86,25 +68,22 @@
       transition: transform .25s ease, opacity .25s ease;
       display:none;
     }
-    /* 桌機：左右各一隻，朝中間 */
-    .side-panther.left{left:1.5%;transform:translateY(-50%) scaleX(1);}
-    .side-panther.right{right:1.5%;transform:translateY(-50%) scaleX(1);}
 
-    .side-hangyodon.left{left:1.5%;transform:translateY(-50%) scaleX(-1);}
-    .side-hangyodon.right{right:1.5%;transform:translateY(-50%) scaleX(-1);}
+    .side-panther.left{left:1.5%; transform:translateY(-50%) scaleX(1);}
+    .side-panther.right{right:1.5%; transform:translateY(-50%) scaleX(1);}
+
+    .side-hangyodon.left{left:1.5%; transform:translateY(-50%) scaleX(-1);}
+    .side-hangyodon.right{right:1.5%; transform:translateY(-50%) scaleX(-1);}
 
     html[data-style="panther"] .side-panther{display:block;}
     html[data-style="hangyodon"] .side-hangyodon{display:block;}
 
-    /* 手機 / 小螢幕：只留右邊那一隻，置中顯示 */
     @media (max-width: 900px){
-      /* 左邊角色強制關閉，避免被上面的規則打開 */
       html[data-style="panther"] .side-panther.left,
       html[data-style="hangyodon"] .side-hangyodon.left{
         display:none !important;
       }
 
-      /* 右邊角色置中當背景圖案 */
       html[data-style="panther"] .side-panther.right,
       html[data-style="hangyodon"] .side-hangyodon.right{
         display:block !important;
@@ -115,11 +94,10 @@
         transform:translate(-50%, -50%) !important;
         width:260px;
         opacity:.7;
-        pointer-events:none;
-        z-index:1;
       }
     }
 
+    /* Title */
     h1 {
       color: var(--accent);
       font-size: 22px;
@@ -137,6 +115,8 @@
       position: relative;
       z-index: 2;
     }
+
+    /* Button */
     .toolbar {
       display: flex;
       gap: 8px;
@@ -165,6 +145,7 @@
       border-color: var(--accent-hover);
     }
 
+    /* PDF Viewer */
     .viewer {
       width: 100%;
       max-width: 1100px;
@@ -201,12 +182,12 @@
 </head>
 <body>
 
-  <!-- 左右角色（與主頁共用素材） -->
-  <img src="pinkpanther1.png" alt="Pink Panther Left" class="side-panther left">
-  <img src="pinkpanther2.png" alt="Pink Panther Right" class="side-panther right">
+  <!-- 左右角色 -->
+  <img src="pinkpanther1.png" alt="" class="side-panther left">
+  <img src="pinkpanther2.png" alt="" class="side-panther right">
 
-  <img src="hangyodon1.png" alt="Hangyodon Left" class="side-hangyodon left">
-  <img src="hangyodon2.png" alt="Hangyodon Right" class="side-hangyodon right">
+  <img src="hangyodon1.png" alt="" class="side-hangyodon left">
+  <img src="hangyodon2.png" alt="" class="side-hangyodon right">
 
   <h1>Line 1 Schematic</h1>
   <div class="subtitle">Production Line 1 – Wiring and PLC Diagram</div>
@@ -218,8 +199,7 @@
   <div class="viewer" id="viewer">
     <object id="pdfObject" data="Line-1-F13-Schematic.pdf#view=FitH" type="application/pdf">
       <div class="fallback">
-        Your browser cannot display embedded PDFs.
-        <br>
+        Your browser cannot display embedded PDFs.<br>
         <a class="btn" href="Line-1-F13-Schematic.pdf">Download / Open PDF</a>
       </div>
     </object>
@@ -229,12 +209,7 @@
     (function () {
       const pdfUrl = "Line-1-F13-Schematic.pdf";
 
-      const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent);
-      const openNewTab = document.getElementById('openNewTab');
-      openNewTab.href = pdfUrl;
-
-      // 若你想行動裝置直接跳出 PDF，可以改成：
-      // if (isMobile) window.location.replace(pdfUrl);
+      document.getElementById('openNewTab').href = pdfUrl;
 
       const obj = document.getElementById('pdfObject');
       obj.addEventListener('error', () => {
@@ -243,5 +218,6 @@
       });
     })();
   </script>
+
 </body>
 </html>
