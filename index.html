@@ -78,12 +78,14 @@
     }
 
     /* 左側：品牌 + Modules 按鈕（上下排列） */
-    .top-left{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      align-items:flex-start;
-    }
+   .top-left{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;  /* 上下拉開：上 logo、下按鈕 */
+  gap:10px;
+  align-items:flex-start;
+  min-height:72px;                /* 給一點高度，讓按鈕真的靠「左下」 */
+}
 
     .brand-wrap{display:flex;align-items:center;gap:10px}
 
@@ -111,25 +113,28 @@
     .brand-sub{font-size:13px;color:var(--text-soft)}
 
     /* Modules 按鈕（topbar 左下角） */
-    .menu-button{
-      border-radius:999px;
-      border:1px solid #e5e7eb;
-      background:#eff6ff;
-      padding:7px 14px;
-      font-size:13px;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      cursor:pointer;
-      color:#1d4ed8;
-      box-shadow:0 4px 10px rgba(129,140,248,.35);
-      transition:all .18s ease;
-    }
-    .menu-button:hover{
-      background:#dbeafe;
-      transform:translateY(-1px);
-      box-shadow:0 6px 16px rgba(129,140,248,.45);
-    }
+   /* Modules 按鈕（topbar 左下角） */
+.menu-button{
+  border-radius:999px;
+  border:1px solid #e5e7eb;
+  background:#eff6ff;
+  /* 整顆按鈕大小：這裡改 padding / font-size */
+  padding:10px 22px;          /* ← 比原本大一點 */
+  font-size:14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;     /* ← 文字 + icon 水平置中 */
+  gap:8px;
+  cursor:pointer;
+  color:#1d4ed8;
+  box-shadow:0 4px 10px rgba(129,140,248,.35);
+  transition:all .18s ease;
+}
+.menu-button:hover{
+  background:#dbeafe;
+  transform:translateY(-1px);
+  box-shadow:0 6px 16px rgba(129,140,248,.45);
+}
     .menu-icon{font-size:16px;}
 
     .top-meta{
@@ -305,54 +310,61 @@
       box-shadow:0 4px 10px rgba(37,99,235,.35);
     }
 
-    /* 手機：Modules 面板做成寬度 100% 的下拉 */
-    @media (max-width:900px){
-      .page{
-        padding-top:16px;
-        padding-bottom:24px;
-      }
+@media (max-width:900px){
+  .page{
+    padding-top:16px;
+    padding-bottom:24px;
+  }
 
-      .topbar{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:10px;
-        padding:14px 14px;
-      }
+  .topbar{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+    padding:14px 14px;
+  }
 
-      .brand-main{
-        font-size:17px;
-        letter-spacing:.10em;
-      }
+  .brand-main{
+    font-size:17px;
+    letter-spacing:.10em;
+  }
 
-      .brand-sub{
-        font-size:12px;
-      }
+  .brand-sub{
+    font-size:12px;
+  }
 
-      .top-meta{
-        width:100%;
-        justify-content:flex-start;
-        gap:6px;
-        flex-wrap:wrap;
-      }
+  .top-meta{
+    width:100%;
+    justify-content:flex-start;
+    gap:6px;
+    flex-wrap:wrap;
+  }
 
-      .top-meta .pill,
-      .top-meta .btn-ghost{
-        flex-shrink:0;
-      }
+  .top-meta .pill,
+  .top-meta .btn-ghost{
+    flex-shrink:0;
+  }
 
-      .nav-panel{
-        position:relative;
-        left:0;
-        top:0;
-        width:100%;
-        max-width:none;
-        margin-top:8px;
-      }
+  /* 手機版 Modules 按鈕：改成佔滿一行、置中比較整齊 */
+  .menu-button{
+    align-self:stretch;       /* 讓按鈕寬度吃滿左側 */
+    justify-content:center;   /* 文字 + icon 置中 */
+    text-align:center;
+  }
 
-      .iframe-wrap{
-        height:calc(100vh - 220px);
-      }
-    }
+  .nav-panel{
+    position:relative;
+    left:0;
+    top:0;
+    width:100%;
+    max-width:none;
+    margin-top:8px;
+  }
+
+  .iframe-wrap{
+    height:calc(100vh - 220px);
+  }
+}
+
   </style>
 </head>
 <body>
