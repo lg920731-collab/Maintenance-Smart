@@ -20,20 +20,6 @@
       --small-font:13px; --xsmall-font:11px;
     }
 
-    /* Dark mode */
-    html[data-theme="dark"]{
-      --bg:#020617;
-      --card-bg:#020617;
-      --border-subtle:#1f2937;
-      --accent:#60a5fa;
-      --accent-soft:rgba(37,99,235,.14);
-      --accent-hover:#3b82f6;
-      --text:#e5e7eb;
-      --text-soft:#9ca3af;
-      --shadow-soft-sm:0 10px 26px rgba(0,0,0,.6);
-      --shadow-soft-md:0 16px 40px rgba(0,0,0,.75);
-    }
-
     /* style 主題底色（index 用純色，不用圖） */
     html[data-style="panther"]{
       --bg:#ffe4ec;   /* 淡粉 */
@@ -78,14 +64,14 @@
     }
 
     /* 左側：品牌 + Modules 按鈕（上下排列） */
-   .top-left{
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;  /* 上下拉開：上 logo、下按鈕 */
-  gap:10px;
-  align-items:flex-start;
-  min-height:72px;                /* 給一點高度，讓按鈕真的靠「左下」 */
-}
+    .top-left{
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;  /* 上 logo、下按鈕 */
+      gap:10px;
+      align-items:flex-start;
+      min-height:72px;                /* 讓按鈕靠左下 */
+    }
 
     .brand-wrap{display:flex;align-items:center;gap:10px}
 
@@ -113,28 +99,26 @@
     .brand-sub{font-size:13px;color:var(--text-soft)}
 
     /* Modules 按鈕（topbar 左下角） */
-   /* Modules 按鈕（topbar 左下角） */
-.menu-button{
-  border-radius:999px;
-  border:1px solid #e5e7eb;
-  background:#eff6ff;
-  /* 整顆按鈕大小：這裡改 padding / font-size */
-  padding:10px 22px;          /* ← 比原本大一點 */
-  font-size:14px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;     /* ← 文字 + icon 水平置中 */
-  gap:8px;
-  cursor:pointer;
-  color:#1d4ed8;
-  box-shadow:0 4px 10px rgba(129,140,248,.35);
-  transition:all .18s ease;
-}
-.menu-button:hover{
-  background:#dbeafe;
-  transform:translateY(-1px);
-  box-shadow:0 6px 16px rgba(129,140,248,.45);
-}
+    .menu-button{
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      background:#eff6ff;
+      padding:10px 22px;
+      font-size:14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      cursor:pointer;
+      color:#1d4ed8;
+      box-shadow:0 4px 10px rgba(129,140,248,.35);
+      transition:all .18s ease;
+    }
+    .menu-button:hover{
+      background:#dbeafe;
+      transform:translateY(-1px);
+      box-shadow:0 6px 16px rgba(129,140,248,.45);
+    }
     .menu-icon{font-size:16px;}
 
     .top-meta{
@@ -155,10 +139,6 @@
       gap:6px;
       transition:background .2s ease,border-color .2s ease,color .2s ease;
     }
-    html[data-theme="dark"] .pill{
-      border-color:#1f2937;
-      background:#020617;
-    }
     .pill-label{color:var(--text-soft)}
     .pill-strong{color:var(--text);font-weight:500}
 
@@ -167,40 +147,11 @@
       border-color:#dbeafe;
       background:#eff6ff;
     }
-    html[data-theme="dark"] .pill.designer{
-      border-color:#1d4ed8;
-      background:rgba(37,99,235,.18);
-    }
     .pill-designer-strong{
       font-size:14px;
       font-weight:700;
       letter-spacing:.02em;
       color:var(--text);
-    }
-
-    /* theme 按鈕 */
-    .btn-ghost{
-      border-radius:999px;
-      border:1px solid #e5e7eb;
-      background:transparent;
-      padding:5px 9px;
-      font-size:13px;
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      cursor:pointer;
-      color:var(--text-soft);
-      transition:all .18s ease;
-    }
-    html[data-theme="dark"] .btn-ghost{
-      border-color:#1f2937;
-    }
-    .btn-ghost-icon{font-size:14px}
-    .btn-ghost:hover{
-      border-color:var(--accent);
-      color:var(--accent);
-      box-shadow:0 0 0 2px rgba(37,99,235,.14);
-      background:var(--accent-soft);
     }
 
     /* 整體 workspace：只剩右側內容 */
@@ -257,9 +208,6 @@
       z-index:10;
       display:none;
     }
-    html[data-theme="dark"] .nav-panel{
-      background:rgba(15,23,42,0.98);
-    }
     .nav-panel.open{
       display:block;
     }
@@ -310,61 +258,59 @@
       box-shadow:0 4px 10px rgba(37,99,235,.35);
     }
 
-@media (max-width:900px){
-  .page{
-    padding-top:16px;
-    padding-bottom:24px;
-  }
+    @media (max-width:900px){
+      .page{
+        padding-top:16px;
+        padding-bottom:24px;
+      }
 
-  .topbar{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:10px;
-    padding:14px 14px;
-  }
+      .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+        padding:14px 14px;
+      }
 
-  .brand-main{
-    font-size:17px;
-    letter-spacing:.10em;
-  }
+      .brand-main{
+        font-size:17px;
+        letter-spacing:.10em;
+      }
 
-  .brand-sub{
-    font-size:12px;
-  }
+      .brand-sub{
+        font-size:12px;
+      }
 
-  .top-meta{
-    width:100%;
-    justify-content:flex-start;
-    gap:6px;
-    flex-wrap:wrap;
-  }
+      .top-meta{
+        width:100%;
+        justify-content:flex-start;
+        gap:6px;
+        flex-wrap:wrap;
+      }
 
-  .top-meta .pill,
-  .top-meta .btn-ghost{
-    flex-shrink:0;
-  }
+      .top-meta .pill{
+        flex-shrink:0;
+      }
 
-  /* 手機版 Modules 按鈕：改成佔滿一行、置中比較整齊 */
-  .menu-button{
-    align-self:stretch;       /* 讓按鈕寬度吃滿左側 */
-    justify-content:center;   /* 文字 + icon 置中 */
-    text-align:center;
-  }
+      /* 手機版 Modules 按鈕：佔滿一行、置中 */
+      .menu-button{
+        align-self:stretch;
+        justify-content:center;
+        text-align:center;
+      }
 
-  .nav-panel{
-    position:relative;
-    left:0;
-    top:0;
-    width:100%;
-    max-width:none;
-    margin-top:8px;
-  }
+      .nav-panel{
+        position:relative;
+        left:0;
+        top:0;
+        width:100%;
+        max-width:none;
+        margin-top:8px;
+      }
 
-  .iframe-wrap{
-    height:calc(100vh - 220px);
-  }
-}
-
+      .iframe-wrap{
+        height:calc(100vh - 220px);
+      }
+    }
   </style>
 </head>
 <body>
@@ -392,10 +338,6 @@
           <span class="pill-label">Modified Date</span>
           <span class="pill-strong" id="modDate">Checking…</span>
         </div>
-        <button id="themeToggle" class="btn-ghost" type="button" aria-label="Toggle theme">
-          <span class="btn-ghost-icon" id="themeIcon">🌞</span>
-          <span id="themeLabel">Theme</span>
-        </button>
       </div>
     </div>
 
@@ -464,14 +406,6 @@
   </div>
 
   <script>
-    // 初始化 light/dark theme
-    (function initTheme(){
-      const stored = localStorage.getItem('ms-theme');
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = stored || (prefersDark ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', theme);
-    })();
-
     // GitHub last commit datetime
     (async function(){
       const el = document.getElementById('modDate');
@@ -521,28 +455,6 @@
       }
 
       window._msSyncFrameStyle = applyStyleToFrame;
-    })();
-
-    /* Theme Toggle (light/dark) */
-    (function(){
-      const btn = document.getElementById('themeToggle');
-      const icon = document.getElementById('themeIcon');
-
-      function applyIcon(theme){
-        icon.textContent = theme === 'dark' ? '🌙' : '🌞';
-      }
-
-      function toggleTheme(){
-        const current = document.documentElement.getAttribute('data-theme') || 'light';
-        const next = current === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('ms-theme', next);
-        applyIcon(next);
-      }
-
-      const initial = document.documentElement.getAttribute('data-theme') || 'light';
-      applyIcon(initial);
-      btn.addEventListener('click', toggleTheme);
     })();
 
     // Modules 面板開關
@@ -660,4 +572,3 @@
   </script>
 </body>
 </html>
-
