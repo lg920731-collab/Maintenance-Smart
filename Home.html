@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home | Maintenance Smart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --text: #111827;
+    }
+
+    html[data-style="panther"]{
+      --bg:#ffe4ec;
+    }
+    html[data-style="hangyodon"]{
+      --bg:#dbeafe;
+    }
+
+    body{
+      margin:0;
+      background:var(--bg);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100vh;
+      padding:0;
+    }
+
+    .home-image{
+      max-width:90%;
+      max-height:90%;
+      border-radius:18px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.15);
+      object-fit:contain;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- 修改這個 src 換成你要的照片 -->
+  <img src="home.jpg" alt="Home" class="home-image">
+
+</body>
+</html>
