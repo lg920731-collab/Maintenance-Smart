@@ -80,11 +80,14 @@
       width:28px;
       height:28px;
       border-radius:9px;
-      background:radial-gradient(circle at 30% 0,#bfdbfe,#2563eb);
+      background:radial-gradient(circle at 30% 0,#bfdbfe,#2563eb); /* 藍色預設漸層 */
       box-shadow:0 0 10px rgba(37,99,235,0.35);
       flex-shrink:0;
       object-fit:cover;
+      background-size:cover;
+      background-position:center;
     }
+
 
     .brand-main{
       font-size:19px;
@@ -329,7 +332,7 @@
     <div class="topbar">
       <div class="top-left">
         <div class="brand-wrap">
-          <img src="" alt="Theme Mascot" class="mascot" />
+          <div class="mascot"></div>
           <div>
             <div class="brand-main">MAINTENANCE SMART</div>
             <div class="brand-sub">Smarter maintenance, easier life.</div>
@@ -538,62 +541,59 @@
     })();
 
     // Style Theme (blue / panther / hangyodon) – 點左上 icon 切換
-    (function(){
-      const STYLE_KEY = 'ms-style';
-      const root = document.documentElement;
-      const mascot = document.querySelector('.mascot');
-      const styles = ['blue', 'panther', 'hangyodon'];
+    // Style Theme (blue / panther / hangyodon) – 點左上 icon 切換
+(function(){
+  const STYLE_KEY = 'ms-style';
+  const root = document.documentElement;
+  const mascot = document.querySelector('.mascot');
+  const styles = ['blue', 'panther', 'hangyodon'];
 
-      const themeConfig = {
-        blue: {
-          mascotSrc: '',
-          mascotAlt: 'Blue theme'
-        },
-        panther: {
-          mascotSrc: 'pinkpanther.png',
-          mascotAlt: 'Pink Panther theme'
-        },
-        hangyodon: {
-          mascotSrc: 'hangyodon.png',
-          mascotAlt: 'Hangyodon theme'
-        }
-      };
+  const themeConfig = {
+    blue: {
+      bgImage: ''                  // 用預設 CSS 漸層
+    },
+    panther: {
+      bgImage: 'url("pinkpanther.png")'
+    },
+    hangyodon: {
+      bgImage: 'url("hangyodon.png")'
+    }
+  };
 
-      function applyStyle(style){
-        const s = themeConfig[style] ? style : 'blue';
-        root.setAttribute('data-style', s);
-        const cfg = themeConfig[s];
-        if (mascot){
-          if (s === 'blue'){
-            mascot.removeAttribute('src');
-          }else{
-            mascot.src = cfg.mascotSrc;
-          }
-          mascot.alt = cfg.mascotAlt;
-        }
-        localStorage.setItem(STYLE_KEY, s);
+  function applyStyle(style){
+    const s = themeConfig[style] ? style : 'blue';
+    root.setAttribute('data-style', s);
+    const cfg = themeConfig[s];
 
-        if (window._msSyncFrameStyle){
-          setTimeout(window._msSyncFrameStyle, 30);
-        }
-      }
+    if (mascot){
+      // 有設定圖片就蓋掉，沒有就用預設漸層方塊
+      mascot.style.backgroundImage = cfg.bgImage || '';
+    }
 
-      function cycleStyle(){
-        const current = root.getAttribute('data-style') || 'blue';
-        const idx = styles.indexOf(current);
-        const next = styles[(idx + 1) % styles.length];
-        applyStyle(next);
-      }
+    localStorage.setItem(STYLE_KEY, s);
 
-      const saved = localStorage.getItem(STYLE_KEY) || 'blue';
-      applyStyle(saved);
+    if (window._msSyncFrameStyle){
+      setTimeout(window._msSyncFrameStyle, 30);
+    }
+  }
 
-      if (mascot){
-        mascot.style.cursor = 'pointer';
-        mascot.title = 'Click to change style';
-        mascot.addEventListener('click', cycleStyle);
-      }
-    })();
+  function cycleStyle(){
+    const current = root.getAttribute('data-style') || 'blue';
+    const idx = styles.indexOf(current);
+    const next = styles[(idx + 1) % styles.length];
+    applyStyle(next);
+  }
+
+  const saved = localStorage.getItem(STYLE_KEY) || 'blue';
+  applyStyle(saved);
+
+  if (mascot){
+    mascot.style.cursor = 'pointer';
+    mascot.title = 'Click to change style';
+    mascot.addEventListener('click', cycleStyle);
+  }
+})();
+
   </script>
 </body>
 </html>
