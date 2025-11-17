@@ -79,7 +79,7 @@
 
     .brand-wrap{display:flex;align-items:center;gap:10px}
 
-    /* 左上主題 icon：藍色主題用漸層方塊，其他主題顯示角色頭像 */
+    /* 左上主題 icon：藍色主題用漸層方塊 */
     .mascot{
       width:28px;
       height:28px;
@@ -302,7 +302,8 @@
       box-shadow:0 4px 10px rgba(37,99,235,.35);
     }
 
-    /* 手機：Topbar 改成品牌 + 兩排控制（Modified/Theme & Modules/Designed） */
+    /* 手機：Topbar 改成品牌 + 兩排控制（Modified/Theme & Modules/Designed），
+       並用 flex-basis 控制「整顆」按鈕寬度長短 */
     @media (max-width:900px){
       .page{
         padding-top:16px;
@@ -331,27 +332,21 @@
         gap:6px;
       }
 
-      /* 四顆按鈕平均分成兩排 */
+      /* 基本設定：可以換行、但不要平均分配 */
       .top-controls > *{
-        flex:1 1 calc(50% - 6px);
         min-width:0;
       }
 
-      /* 👉 長短調整：Modified / Theme / Modules / Designed */
-      .top-controls .modified-date{
-        padding:6px 18px;          /* Modified Date 長一點 */
-      }
-
-      #themeToggle{
-        padding:4px 8px;           /* Theme 短一點 */
-      }
-
-      #menuButton{
-        padding:5px 10px;          /* Modules 短一點 */
-      }
-
+      /* Modified Date & Designed by 佔比較寬（長一點） */
+      .top-controls .modified-date,
       .top-controls .designer{
-        padding:7px 20px;          /* Designed by 長一點 */
+        flex:0 0 62%;
+      }
+
+      /* Theme & Modules 比較窄（短一點） */
+      #themeToggle,
+      #menuButton{
+        flex:0 0 38%;
       }
 
       .nav-panel{
