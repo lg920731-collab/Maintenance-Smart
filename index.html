@@ -27,165 +27,6 @@
     html[data-style="hangyodon"]{
       --bg:#dbeafe;   /* 淡藍 */
     }
-   <script>
-    /* ---------- Modified Date：用這個 HTML 檔最後修改時間 ---------- */
-    (function () {
-      function updateModDate() {
-        var el = document.getElementById('modDate');
-        if (!el) return;
-
-        var d = new Date(document.lastModified);
-        if (isNaN(d.getTime())) {
-          el.textContent = 'N/A';
-          return;
-        }
-
-        el.textContent = d.toLocaleString([], {
-          year:   'numeric',
-          month:  '2-digit',
-          day:    '2-digit',
-          hour:   '2-digit',
-          minute: '2-digit'
-        });
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', updateModDate);
-      } else {
-        updateModDate();
-      }
-    })();
-
-
-    /* ---------- 子頁面同步主頁 style ---------- */
-    (function syncStyleToIframe(){
-      const frame = document.getElementById("mainFrame");
-
-      function applyStyleToFrame(){
-        if (!frame || !frame.contentDocument) return;
-        const style = document.documentElement.getAttribute("data-style") || "blue";
-        const frameHtml = frame.contentDocument.documentElement;
-        frameHtml.setAttribute("data-style", style);
-      }
-
-      if (frame){
-        frame.addEventListener("load", function(){
-          setTimeout(applyStyleToFrame, 30);
-        });
-      }
-
-      window._msSyncFrameStyle = applyStyleToFrame;
-    })();
-
-
-    /* ---------- Modules 面板開關 ---------- */
-    (function(){
-      const menuBtn = document.getElementById('menuButton');
-      const panel   = document.getElementById('navPanel');
-
-      function togglePanel(){
-        const isOpen = panel.classList.toggle('open');
-        menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      }
-
-      if (menuBtn && panel){
-        menuBtn.addEventListener('click', togglePanel);
-      }
-
-      // 點擊頁面其他地方就關閉
-      document.addEventListener('click', (e)=>{
-        if (!panel.classList.contains('open')) return;
-        const insidePanel = panel.contains(e.target);
-        const insideBtn   = menuBtn.contains(e.target);
-        if (!insidePanel && !insideBtn){
-          panel.classList.remove('open');
-          menuBtn.setAttribute('aria-expanded','false');
-        }
-      });
-    })();
-
-
-    /* ---------- 切換模組 (iframe + 標題) ---------- */
-    (function(){
-      const frame   = document.getElementById('mainFrame');
-      const titleEl = document.getElementById('moduleTitle');
-      const subEl   = document.getElementById('moduleSub');
-      const buttons = document.querySelectorAll('.nav-item-btn');
-      const panel   = document.getElementById('navPanel');
-      const menuBtn = document.getElementById('menuButton');
-
-      buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          buttons.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-
-          const src   = btn.dataset.src;
-          const title = btn.dataset.title || 'Module';
-          const sub   = btn.dataset.sub || '';
-
-          if (frame && src) frame.src = src;
-          titleEl.textContent = title;
-          subEl.textContent   = sub;
-
-          // 點完選單自動收起 panel（特別是手機）
-          if (panel && panel.classList.contains('open')){
-            panel.classList.remove('open');
-            if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
-          }
-        });
-      });
-    })();
-
-
-    /* ---------- Style Theme (blue / panther / hangyodon) – 點左上 icon 切換 ---------- */
-    (function(){
-      const STYLE_KEY = 'ms-style';
-      const root   = document.documentElement;
-      const mascot = document.querySelector('.mascot');
-      const styles = ['blue', 'panther', 'hangyodon'];
-
-      const themeConfig = {
-        blue:     { bgImage: '' },                    // 藍色主題用 CSS 預設漸層方塊
-        panther:  { bgImage: 'url("pinkpanther.png")' },
-        hangyodon:{ bgImage: 'url("hangyodon.png")' }
-      };
-
-      function applyStyle(style){
-        const s   = themeConfig[style] ? style : 'blue';
-        const cfg = themeConfig[s];
-
-        root.setAttribute('data-style', s);
-
-        if (mascot){
-          // 有圖就套圖，沒有就維持藍色漸層方塊
-          mascot.style.backgroundImage = cfg.bgImage || '';
-        }
-
-        localStorage.setItem(STYLE_KEY, s);
-
-        if (window._msSyncFrameStyle){
-          setTimeout(window._msSyncFrameStyle, 30);
-        }
-      }
-
-      function cycleStyle(){
-        const current = root.getAttribute('data-style') || 'blue';
-        const idx     = styles.indexOf(current);
-        const next    = styles[(idx + 1) % styles.length];
-        applyStyle(next);
-      }
-
-      const saved = localStorage.getItem(STYLE_KEY) || 'blue';
-      applyStyle(saved);
-
-      if (mascot){
-        mascot.style.cursor = 'pointer';
-        mascot.title = 'Click to change style';
-        mascot.addEventListener('click', cycleStyle);
-      }
-    })();
-  </script>
-
 
     *{box-sizing:border-box}
     body{
@@ -246,7 +87,6 @@
       background-size:cover;
       background-position:center;
     }
-
 
     .brand-main{
       font-size:19px;
@@ -421,69 +261,68 @@
     }
 
     @media (max-width:900px){
-  .page{
-    padding-top:16px;
-    padding-bottom:24px;
-  }
+      .page{
+        padding-top:16px;
+        padding-bottom:24px;
+      }
 
-  .topbar{
-    display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    gap:10px;
-    padding:14px 14px 18px;
-  }
+      .topbar{
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+        padding:14px 14px 18px;
+      }
 
-  /* 手機版：把 top-left 展開，裡面的東西當成 topbar 直列項目 */
-  .top-left{
-    display:contents;
-    min-height:0;        /* 原本的 min-height 取消 */
-  }
+      /* 手機版：把 top-left 展開，裡面的東西當成 topbar 直列項目 */
+      .top-left{
+        display:contents;
+        min-height:0;        /* 原本的 min-height 取消 */
+      }
 
-  .brand-main{
-    font-size:17px;
-    letter-spacing:.10em;
-  }
+      .brand-main{
+        font-size:17px;
+        letter-spacing:.10em;
+      }
 
-  .brand-sub{
-    font-size:12px;
-  }
+      .brand-sub{
+        font-size:12px;
+      }
 
-  .top-meta{
-    width:100%;
-    justify-content:flex-start;
-    gap:6px;
-    flex-wrap:wrap;
-    order:2;             /* 在品牌之後、Modules 之前 */
-  }
+      .top-meta{
+        width:100%;
+        justify-content:flex-start;
+        gap:6px;
+        flex-wrap:wrap;
+        order:2;             /* 在品牌之後、Modules 之前 */
+      }
 
-  .top-meta .pill{
-    flex-shrink:0;
-  }
+      .top-meta .pill{
+        flex-shrink:0;
+      }
 
-  /* 手機版 Modules 按鈕：放在 topbar 最下面，佔滿一行 */
-  .menu-button{
-    order:3;             /* 整個 topbar 的最後一個 */
-    align-self:stretch;
-    justify-content:center;
-    text-align:center;
-    margin-top:4px;
-  }
+      /* 手機版 Modules 按鈕：放在 topbar 最下面，佔滿一行 */
+      .menu-button{
+        order:3;             /* 整個 topbar 的最後一個 */
+        align-self:stretch;
+        justify-content:center;
+        text-align:center;
+        margin-top:4px;
+      }
 
-  .nav-panel{
-    position:relative;
-    left:0;
-    top:0;
-    width:100%;
-    max-width:none;
-    margin-top:8px;
-  }
+      .nav-panel{
+        position:relative;
+        left:0;
+        top:0;
+        width:100%;
+        max-width:none;
+        margin-top:8px;
+      }
 
-  .iframe-wrap{
-    height:calc(100vh - 220px);
-  }
-}
-
+      .iframe-wrap{
+        height:calc(100vh - 220px);
+      }
+    }
   </style>
 </head>
 <body>
@@ -517,27 +356,27 @@
     <!-- Modules 功能列：一開始收起來，按左下角按鈕展開 -->
     <nav class="nav-panel" id="navPanel" aria-label="Module navigation">
       <ul class="nav-list">
-  <li>
-    <button
-      class="nav-item-btn active"
-      data-src="Home.html"
-      data-title="Home"
-      data-sub="Welcome to Maintenance Smart.">
-      <span class="nav-icon">🏠</span>
-      <span class="nav-label">Home</span>
-    </button>
-  </li>
+        <li>
+          <button
+            class="nav-item-btn active"
+            data-src="Home.html"
+            data-title="Home"
+            data-sub="Welcome to Maintenance Smart.">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Home</span>
+          </button>
+        </li>
 
-  <li>
-    <button
-      class="nav-item-btn"
-      data-src="PC Manager.html"
-      data-title="PC Manager"
-      data-sub="BOPP1 computer asset list from inventory.csv.">
-      <span class="nav-icon">💻</span>
-      <span class="nav-label">PC Manager</span>
-    </button>
-  </li>
+        <li>
+          <button
+            class="nav-item-btn"
+            data-src="PC Manager.html"
+            data-title="PC Manager"
+            data-sub="BOPP1 computer asset list from inventory.csv.">
+            <span class="nav-icon">💻</span>
+            <span class="nav-label">PC Manager</span>
+          </button>
+        </li>
         <li>
           <button
             class="nav-item-btn"
@@ -577,9 +416,8 @@
           <div>
             <h2 class="section-title" id="moduleTitle">Home</h2>
             <p class="section-sub" id="moduleSub">
-             Welcome to Maintenance Smart.
+              Welcome to Maintenance Smart.
             </p>
-
           </div>
         </div>
 
@@ -591,8 +429,33 @@
   </div>
 
   <script>
-    // GitHub last commit datetime
+    /* ---------- Modified Date：用這個 HTML 檔最後修改時間 ---------- */
+    (function () {
+      function updateModDate() {
+        var el = document.getElementById('modDate');
+        if (!el) return;
 
+        var d = new Date(document.lastModified);
+        if (isNaN(d.getTime())) {
+          el.textContent = 'N/A';
+          return;
+        }
+
+        el.textContent = d.toLocaleString([], {
+          year:   'numeric',
+          month:  '2-digit',
+          day:    '2-digit',
+          hour:   '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateModDate);
+      } else {
+        updateModDate();
+      }
+    })();
 
     // ---- 子頁面同步主頁 style ----
     (function syncStyleToIframe(){
@@ -670,59 +533,57 @@
     })();
 
     // Style Theme (blue / panther / hangyodon) – 點左上 icon 切換
-    // Style Theme (blue / panther / hangyodon) – 點左上 icon 切換
-(function(){
-  const STYLE_KEY = 'ms-style';
-  const root = document.documentElement;
-  const mascot = document.querySelector('.mascot');
-  const styles = ['blue', 'panther', 'hangyodon'];
+    (function(){
+      const STYLE_KEY = 'ms-style';
+      const root = document.documentElement;
+      const mascot = document.querySelector('.mascot');
+      const styles = ['blue', 'panther', 'hangyodon'];
 
-  const themeConfig = {
-    blue: {
-      bgImage: ''                  // 用預設 CSS 漸層
-    },
-    panther: {
-      bgImage: 'url("pinkpanther.png")'
-    },
-    hangyodon: {
-      bgImage: 'url("hangyodon.png")'
-    }
-  };
+      const themeConfig = {
+        blue: {
+          bgImage: ''                  // 用預設 CSS 漸層
+        },
+        panther: {
+          bgImage: 'url("pinkpanther.png")'
+        },
+        hangyodon: {
+          bgImage: 'url("hangyodon.png")'
+        }
+      };
 
-  function applyStyle(style){
-    const s = themeConfig[style] ? style : 'blue';
-    root.setAttribute('data-style', s);
-    const cfg = themeConfig[s];
+      function applyStyle(style){
+        const s = themeConfig[style] ? style : 'blue';
+        root.setAttribute('data-style', s);
+        const cfg = themeConfig[s];
 
-    if (mascot){
-      // 有設定圖片就蓋掉，沒有就用預設漸層方塊
-      mascot.style.backgroundImage = cfg.bgImage || '';
-    }
+        if (mascot){
+          // 有設定圖片就蓋掉，沒有就用預設漸層方塊
+          mascot.style.backgroundImage = cfg.bgImage || '';
+        }
 
-    localStorage.setItem(STYLE_KEY, s);
+        localStorage.setItem(STYLE_KEY, s);
 
-    if (window._msSyncFrameStyle){
-      setTimeout(window._msSyncFrameStyle, 30);
-    }
-  }
+        if (window._msSyncFrameStyle){
+          setTimeout(window._msSyncFrameStyle, 30);
+        }
+      }
 
-  function cycleStyle(){
-    const current = root.getAttribute('data-style') || 'blue';
-    const idx = styles.indexOf(current);
-    const next = styles[(idx + 1) % styles.length];
-    applyStyle(next);
-  }
+      function cycleStyle(){
+        const current = root.getAttribute('data-style') || 'blue';
+        const idx = styles.indexOf(current);
+        const next = styles[(idx + 1) % styles.length];
+        applyStyle(next);
+      }
 
-  const saved = localStorage.getItem(STYLE_KEY) || 'blue';
-  applyStyle(saved);
+      const saved = localStorage.getItem(STYLE_KEY) || 'blue';
+      applyStyle(saved);
 
-  if (mascot){
-    mascot.style.cursor = 'pointer';
-    mascot.title = 'Click to change style';
-    mascot.addEventListener('click', cycleStyle);
-  }
-})();
-
+      if (mascot){
+        mascot.style.cursor = 'pointer';
+        mascot.title = 'Click to change style';
+        mascot.addEventListener('click', cycleStyle);
+      }
+    })();
   </script>
 </body>
 </html>
