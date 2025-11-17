@@ -98,13 +98,11 @@
 
     /* 手機 / 平板：只保留右邊大圖並置中 */
     @media (max-width: 900px){
-      /* 左邊角色一定關閉 */
       html[data-style="panther"] .side-panther.left,
       html[data-style="hangyodon"] .side-hangyodon.left{
         display:none !important;
       }
 
-      /* 右邊角色置中顯示 */
       html[data-style="panther"] .side-panther.right,
       html[data-style="hangyodon"] .side-hangyodon.right{
         display:block !important;
@@ -126,99 +124,6 @@
       margin: 0 auto;
       padding: 20px 16px 32px;
       z-index:2;
-    }
-
-    /* Top bar */
-    .topbar {
-      background: var(--card-bg);
-      padding: 14px 18px;
-      border-radius: 18px;
-      box-shadow: var(--shadow-soft-sm);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      border: 1px solid var(--border-subtle);
-      transition: background .25s ease, box-shadow .25s ease, border-color .25s ease;
-    }
-
-    .brand-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-logo {
-      width: 28px;
-      height: 28px;
-      border-radius: 9px;
-      background: radial-gradient(circle at 30% 0, #bfdbfe, #2563eb);
-      box-shadow: 0 0 10px rgba(37,99,235,0.35);
-    }
-
-    .brand-main {
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      font-size: 13px;
-      text-transform: uppercase;
-      color: #6b7280;
-    }
-
-    .brand-sub {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-      margin-top: 1px;
-    }
-
-    .brand-sub-note {
-      font-size: var(--xsmall-font);
-      color: var(--text-soft);
-    }
-
-    .top-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      justify-content: flex-end;
-      font-size: var(--xsmall-font);
-      color: var(--text-soft);
-    }
-
-    .pill {
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      background: #f9fafb;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background .2s ease, border-color .2s ease;
-    }
-
-    html[data-theme="dark"] .pill {
-      border-color: #1f2937;
-      background: #020617;
-    }
-
-    .pill-label { color: var(--text-soft); }
-    .pill-strong { color: var(--text); font-weight: 500; }
-
-    .back-link {
-      font-size: var(--xsmall-font);
-      color: var(--accent);
-      text-decoration: none;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #eff6ff;
-      margin-right: 4px;
-      transition: all 0.15s ease;
-    }
-    .back-link:hover {
-      background: #dbeafe;
-      transform: translateY(-1px);
-      box-shadow: 0 3px 8px rgba(148,163,253,0.35);
     }
 
     /* Card */
@@ -245,7 +150,7 @@
       margin-bottom: 8px;
     }
 
-    /* Filter header */
+    /* Filters header */
     .filter-header {
       display: flex;
       justify-content: space-between;
@@ -486,7 +391,6 @@
         max-width: 100%;
         padding: 0;
       }
-      .topbar,
       .card {
         box-shadow: none;
         border-radius: 0;
@@ -496,7 +400,6 @@
       #reloadBtn,
       #printBtn,
       .filter-header,
-      .back-link,
       .side-panther,
       .side-hangyodon {
         display: none !important;
@@ -519,14 +422,6 @@
         background: #ffffff !important;
       }
     }
-
-    @media (max-width: 768px) {
-      .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -538,38 +433,18 @@
   <img src="hangyodon2.png" alt="Hangyodon Right" class="side-hangyodon right">
 
   <div class="page">
-    <!-- Header -->
-    <div class="topbar">
-      <div class="brand-wrap">
-        <div class="brand-logo"></div>
-        <div>
-          <div class="brand-main">MAINTENANCE SMART</div>
-          <div class="brand-sub">BOPP1 PC Manager</div>
-          <div class="brand-sub-note">Company computer asset list (Source: Excel / CSV)</div>
-        </div>
-      </div>
-      <div class="top-meta">
-        <a href="index.html" class="back-link">← Maintenance Smart Portal</a>
-        <div class="pill">
-          <span class="pill-label">Last update</span>
-          <span class="pill-strong" id="lastSync">—</span>
-        </div>
-        <div class="pill">
-          <span class="pill-label">Managed by</span>
-          <span class="pill-strong">Benjamin Lin</span>
-        </div>
-      </div>
-    </div>
-
     <!-- Filters (collapsible) -->
     <div class="card">
       <div class="filter-header" onclick="toggleFilters()">
-        <h2>Filter conditions</h2>
+        <h2>BOPP1 PC Manager – Filter conditions</h2>
         <span id="toggleIcon" class="filter-toggle-icon">▲</span>
       </div>
       <div class="card-subtitle">
         This page is read-only. To update data, edit the Excel file and export
         <strong>inventory.csv</strong> to overwrite the existing file.
+      </div>
+      <div class="card-subtitle">
+        Last update: <span id="lastSync">—</span> · Managed by Benjamin Lin
       </div>
 
       <div class="filters collapsible open" id="filtersBox">
