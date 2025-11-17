@@ -72,17 +72,9 @@
       display:flex;
       justify-content:space-between;
       gap:14px;
-      align-items:flex-start;
+      align-items:center;
       margin-bottom:18px;
       transition:background .25s ease,box-shadow .25s ease,border-color .25s ease;
-    }
-
-    /* 左側：品牌 + Modules 按鈕（上下排列） */
-    .top-left{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      align-items:flex-start;
     }
 
     .brand-wrap{display:flex;align-items:center;gap:10px}
@@ -110,36 +102,16 @@
     }
     .brand-sub{font-size:13px;color:var(--text-soft)}
 
-    /* Modules 按鈕（topbar 左下角） */
-    .menu-button{
-      border-radius:999px;
-      border:1px solid #e5e7eb;
-      background:#eff6ff;
-      padding:7px 14px;
-      font-size:13px;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      cursor:pointer;
-      color:#1d4ed8;
-      box-shadow:0 4px 10px rgba(129,140,248,.35);
-      transition:all .18s ease;
-    }
-    .menu-button:hover{
-      background:#dbeafe;
-      transform:translateY(-1px);
-      box-shadow:0 6px 16px rgba(129,140,248,.45);
-    }
-    .menu-icon{font-size:16px;}
-
-    .top-meta{
+    /* 右側四顆控制：Modified / Theme / Modules / Designed by */
+    .top-controls{
       display:flex;
-      gap:8px;
       align-items:center;
-      font-size:11px;
-      flex-wrap:wrap;
       justify-content:flex-end;
+      gap:8px;
+      flex-wrap:wrap;
+      font-size:11px;
     }
+
     .pill{
       padding:5px 11px;
       border-radius:999px;
@@ -149,6 +121,7 @@
       align-items:center;
       gap:6px;
       transition:background .2s ease,border-color .2s ease,color .2s ease;
+      white-space:nowrap;
     }
     html[data-theme="dark"] .pill{
       border-color:#1f2937;
@@ -186,6 +159,7 @@
       cursor:pointer;
       color:var(--text-soft);
       transition:all .18s ease;
+      white-space:nowrap;
     }
     html[data-theme="dark"] .btn-ghost{
       border-color:#1f2937;
@@ -197,6 +171,29 @@
       box-shadow:0 0 0 2px rgba(37,99,235,.14);
       background:var(--accent-soft);
     }
+
+    /* Modules 按鈕（在四個控制裡） */
+    .menu-button{
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      background:#eff6ff;
+      padding:7px 14px;
+      font-size:13px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      color:#1d4ed8;
+      box-shadow:0 4px 10px rgba(129,140,248,.35);
+      transition:all .18s ease;
+      white-space:nowrap;
+    }
+    .menu-button:hover{
+      background:#dbeafe;
+      transform:translateY(-1px);
+      box-shadow:0 6px 16px rgba(129,140,248,.45);
+    }
+    .menu-icon{font-size:16px;}
 
     /* 整體 workspace：只剩右側內容 */
     .workspace{
@@ -305,7 +302,7 @@
       box-shadow:0 4px 10px rgba(37,99,235,.35);
     }
 
-    /* 手機：Modules 面板做成寬度 100% 的下拉 */
+    /* 手機：Topbar 改成品牌 + 兩排控制（Modified/Theme & Modules/Designed） */
     @media (max-width:900px){
       .page{
         padding-top:16px;
@@ -328,16 +325,16 @@
         font-size:12px;
       }
 
-      .top-meta{
+      .top-controls{
         width:100%;
         justify-content:flex-start;
         gap:6px;
-        flex-wrap:wrap;
       }
 
-      .top-meta .pill,
-      .top-meta .btn-ghost{
-        flex-shrink:0;
+      /* 四顆按鈕平均分成兩排 */
+      .top-controls > *{
+        flex:1 1 calc(50% - 6px);
+        min-width:0;
       }
 
       .nav-panel{
@@ -358,24 +355,16 @@
 <body>
   <div class="page">
     <div class="topbar">
-      <div class="top-left">
-        <div class="brand-wrap">
-          <img src="" alt="Theme Mascot" class="mascot" />
-          <div>
-            <div class="brand-main">MAINTENANCE SMART</div>
-            <div class="brand-sub">Smarter maintenance, easier life.</div>
-          </div>
+      <div class="brand-wrap">
+        <div class="mascot"></div>
+        <div>
+          <div class="brand-main">MAINTENANCE SMART</div>
+          <div class="brand-sub">Smarter maintenance, easier life.</div>
         </div>
-        <button id="menuButton" class="menu-button" type="button" aria-expanded="false" aria-controls="navPanel">
-          <span class="menu-icon">☰</span>
-          <span class="menu-label">Modules</span>
-        </button>
       </div>
-      <div class="top-meta">
-        <div class="pill designer">
-          <span class="pill-label">Designed by</span>
-          <span class="pill-designer-strong">Benjamin Lin</span>
-        </div>
+
+      <!-- 右側四顆：順序故意排成 Modified、Theme、Modules、Designed -->
+      <div class="top-controls">
         <div class="pill">
           <span class="pill-label">Modified Date</span>
           <span class="pill-strong" id="modDate">Checking…</span>
@@ -384,10 +373,18 @@
           <span class="btn-ghost-icon" id="themeIcon">🌞</span>
           <span id="themeLabel">Theme</span>
         </button>
+        <button id="menuButton" class="menu-button" type="button" aria-expanded="false" aria-controls="navPanel">
+          <span class="menu-icon">☰</span>
+          <span class="menu-label">Modules</span>
+        </button>
+        <div class="pill designer">
+          <span class="pill-label">Designed by</span>
+          <span class="pill-designer-strong">Benjamin Lin</span>
+        </div>
       </div>
     </div>
 
-    <!-- Modules 功能列：一開始收起來，按左下角按鈕展開 -->
+    <!-- Modules 功能列：一開始收起來，按 Modules 展開 -->
     <nav class="nav-panel" id="navPanel" aria-label="Module navigation">
       <ul class="nav-list">
         <li>
