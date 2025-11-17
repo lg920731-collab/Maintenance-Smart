@@ -433,24 +433,48 @@
 
   <script>
     // GitHub last commit datetime
-  <script>
-    // Modified Date：直接使用這個 HTML 檔的最後修改時間
-    (function () {
-      const el = document.getElementById('modDate');
-      if (!el) return;
+(async function(){
+  const el = document.getElementById('modDate');
+  if (!el) return;   // ← 安全保護：如果 HTML 裡沒有 modDate，就不要繼續跑
 
-      const d = new Date(document.lastModified);
-      el.textContent = d.toLocaleString([], {
-        year:   'numeric',
-        month:  '2-digit',
-        day:    '2-digit',
-        hour:   '2-digit',
-        minute: '2-digit'
-        // 如果你想看到秒數，就再加一行：
-        // second: '2-digit'
-      });
-    })();
-  </script>
+  const owner  = "lg920731-collab";
+  const repo   = "it-inventory";
+  const branch = "main";
+  const url = `https://api.github.com/repos/${owner}/${repo}/commits/${branch}`;
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("GitHub API error: " + res.status);
+
+    const data = await res.json();
+    const dateStr = data?.commit?.author?.date;
+    if (!dateStr) throw new Error("No date in response");
+
+    const d = new Date(dateStr);
+    el.textContent = d.toLocaleString([], {
+      year:'numeric',
+      month:'2-digit',
+      day:'2-digit',
+      hour:'2-digit',
+      minute:'2-digit'
+    });
+
+  } catch (err) {
+    console.error("GitHub commit time error:", err);
+
+    // 備援方案：用本地 HTML 最後修改時間
+    const d = new Date(document.lastModified);
+    el.textContent = !isNaN(d)
+      ? d.toLocaleString([], {
+          year:'numeric',
+          month:'2-digit',
+          day:'2-digit',
+          hour:'2-digit',
+          minute:'2-digit'
+        })
+      : "N/A";
+  }
+})();
 
 
     // ---- 子頁面同步主頁 style ----
