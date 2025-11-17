@@ -72,21 +72,14 @@
       display:flex;
       justify-content:space-between;
       gap:14px;
-      align-items:flex-start;
+      align-items:center;
       margin-bottom:18px;
       transition:background .25s ease,box-shadow .25s ease,border-color .25s ease;
     }
 
-    .top-left{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      align-items:flex-start;
-    }
-
     .brand-wrap{display:flex;align-items:center;gap:10px}
 
-    /* 左上主題 icon：藍色主題用漸層方塊 */
+    /* 左上主題 icon：藍色主題用漸層方塊，其他主題顯示角色頭像 */
     .mascot{
       width:28px;
       height:28px;
@@ -155,20 +148,20 @@
 
     /* theme 按鈕 */
     .btn-ghost{
-  border-radius:999px;
-  border:1px solid #e5e7eb;
-  background:transparent;
-  padding:5px 9px;
-  font-size:13px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;   /* ⬅ 新增這行，文字＋圖示置中 */
-  gap:6px;
-  cursor:pointer;
-  color:var(--text-soft);
-  transition:all .18s ease;
-  white-space:nowrap;
-}
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      background:transparent;
+      padding:5px 9px;
+      font-size:13px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;  /* 文字＋圖示置中 */
+      gap:6px;
+      cursor:pointer;
+      color:var(--text-soft);
+      transition:all .18s ease;
+      white-space:nowrap;
+    }
     html[data-theme="dark"] .btn-ghost{
       border-color:#1f2937;
     }
@@ -180,23 +173,23 @@
       background:var(--accent-soft);
     }
 
-    /* Modules 按鈕 */
-   .menu-button{
-  border-radius:999px;
-  border:1px solid #e5e7eb;
-  background:#eff6ff;
-  padding:7px 14px;
-  font-size:13px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;   /* ⬅ 新增這行 */
-  gap:8px;
-  cursor:pointer;
-  color:#1d4ed8;
-  box-shadow:0 4px 10px rgba(129,140,248,.35);
-  transition:all .18s ease;
-  white-space:nowrap;
-}
+    /* Modules 按鈕（在四個控制裡） */
+    .menu-button{
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      background:#eff6ff;
+      padding:7px 14px;
+      font-size:13px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;  /* 文字＋圖示置中 */
+      gap:8px;
+      cursor:pointer;
+      color:#1d4ed8;
+      box-shadow:0 4px 10px rgba(129,140,248,.35);
+      transition:all .18s ease;
+      white-space:nowrap;
+    }
     .menu-button:hover{
       background:#dbeafe;
       transform:translateY(-1px);
@@ -204,9 +197,11 @@
     }
     .menu-icon{font-size:16px;}
 
-    /* Desktop：只顯示左下角那顆 Modules */
-    .menu-desktop{display:inline-flex;}
-    .menu-mobile{display:none;}
+    /* 排序，確保 1排: Modified / Theme、2排: Modules / Designed by */
+    .top-controls .modified-pill{order:1;}
+    .top-controls #themeToggle{order:2;}
+    .top-controls #menuButton{order:3;}
+    .top-controls .designer{order:4;}
 
     /* 整體 workspace：只剩右側內容 */
     .workspace{
@@ -315,7 +310,7 @@
       box-shadow:0 4px 10px rgba(37,99,235,.35);
     }
 
-    /* 手機：Topbar 品牌在上，下方 2×2 控制，Modules 用 mobile 那顆 */
+    /* 手機：Topbar 改成品牌 + 兩排控制（Modified/Theme & Modules/Designed） */
     @media (max-width:900px){
       .page{
         padding-top:16px;
@@ -342,26 +337,13 @@
         width:100%;
         justify-content:flex-start;
         gap:6px;
+        flex-wrap:wrap;
       }
 
+      /* 四顆按鈕平均分成兩排 */
       .top-controls > *{
+        flex:0 0 calc(50% - 6px);
         min-width:0;
-      }
-
-      /* 顯示 mobile Modules，隱藏 desktop 那顆 */
-      .menu-desktop{display:none;}
-      .menu-mobile{display:inline-flex;}
-
-      /* 長按鈕：Modified / Designed */
-      .top-controls .modified-date,
-      .top-controls .designer{
-        flex:0 0 62%;
-      }
-
-      /* 短按鈕：Theme / Modules(mobile) */
-      #themeToggle,
-      .top-controls .menu-mobile{
-        flex:0 0 38%;
       }
 
       .nav-panel{
@@ -382,24 +364,17 @@
 <body>
   <div class="page">
     <div class="topbar">
-      <div class="top-left">
-        <div class="brand-wrap">
-          <div class="mascot"></div>
-          <div>
-            <div class="brand-main">MAINTENANCE SMART</div>
-            <div class="brand-sub">Smarter maintenance, easier life.</div>
-          </div>
+      <div class="brand-wrap">
+        <div class="mascot"></div>
+        <div>
+          <div class="brand-main">MAINTENANCE SMART</div>
+          <div class="brand-sub">Smarter maintenance, easier life.</div>
         </div>
-        <!-- Desktop 用的 Modules（左下角） -->
-        <button id="menuButtonDesktop" class="menu-button menu-desktop" type="button" aria-expanded="false" aria-controls="navPanel">
-          <span class="menu-icon">☰</span>
-          <span class="menu-label">Modules</span>
-        </button>
       </div>
 
-      <!-- 右側控制：Modified / Theme / (Mobile Modules) / Designed -->
+      <!-- 右側四顆：順序故意排成 Modified、Theme、Modules、Designed -->
       <div class="top-controls">
-        <div class="pill modified-date">
+        <div class="pill modified-pill">
           <span class="pill-label">Modified Date</span>
           <span class="pill-strong" id="modDate">Checking…</span>
         </div>
@@ -407,8 +382,7 @@
           <span class="btn-ghost-icon" id="themeIcon">🌞</span>
           <span id="themeLabel">Theme</span>
         </button>
-        <!-- Mobile 專用 Modules（2×2 排版用） -->
-        <button id="menuButtonMobile" class="menu-button menu-mobile" type="button" aria-expanded="false" aria-controls="navPanel">
+        <button id="menuButton" class="menu-button" type="button" aria-expanded="false" aria-controls="navPanel">
           <span class="menu-icon">☰</span>
           <span class="menu-label">Modules</span>
         </button>
@@ -419,7 +393,7 @@
       </div>
     </div>
 
-    <!-- Modules 功能列：一開始收起來 -->
+    <!-- Modules 功能列：一開始收起來，按 Modules 展開 -->
     <nav class="nav-panel" id="navPanel" aria-label="Module navigation">
       <ul class="nav-list">
         <li>
@@ -565,35 +539,28 @@
       btn.addEventListener('click', toggleTheme);
     })();
 
-    // Modules 面板開關（桌機 + 手機兩顆按鈕一起控制）
+    // Modules 面板開關
     (function(){
-      const menuBtns = document.querySelectorAll('.menu-button');
+      const menuBtn = document.getElementById('menuButton');
       const panel = document.getElementById('navPanel');
-
-      function setExpanded(isOpen){
-        menuBtns.forEach(b => b.setAttribute('aria-expanded', isOpen ? 'true' : 'false'));
-      }
 
       function togglePanel(){
         const isOpen = panel.classList.toggle('open');
-        setExpanded(isOpen);
+        menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       }
 
-      if (menuBtns.length && panel){
-        menuBtns.forEach(btn => btn.addEventListener('click', (e)=>{
-          e.stopPropagation();
-          togglePanel();
-        }));
+      if (menuBtn && panel){
+        menuBtn.addEventListener('click', togglePanel);
       }
 
       // 點擊頁面其他地方就關閉（桌機用，比較乾淨）
       document.addEventListener('click', (e)=>{
         if (!panel.classList.contains('open')) return;
         const insidePanel = panel.contains(e.target);
-        const insideBtn   = Array.from(menuBtns).some(btn => btn.contains(e.target));
+        const insideBtn   = menuBtn.contains(e.target);
         if (!insidePanel && !insideBtn){
           panel.classList.remove('open');
-          setExpanded(false);
+          menuBtn.setAttribute('aria-expanded','false');
         }
       });
     })();
@@ -605,6 +572,7 @@
       const subEl = document.getElementById('moduleSub');
       const buttons = document.querySelectorAll('.nav-item-btn');
       const panel = document.getElementById('navPanel');
+      const menuBtn = document.getElementById('menuButton');
 
       buttons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -620,8 +588,7 @@
           // 點完選單自動收起 panel（特別是手機）
           if (panel && panel.classList.contains('open')){
             panel.classList.remove('open');
-            document.querySelectorAll('.menu-button')
-              .forEach(b => b.setAttribute('aria-expanded','false'));
+            if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
           }
         });
       });
