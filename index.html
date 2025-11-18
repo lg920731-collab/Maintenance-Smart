@@ -260,6 +260,108 @@
       box-shadow:0 4px 10px rgba(37,99,235,.35);
     }
 
+    /* ===== Line Schematic 兩層子列表樣式 ===== */
+    .nav-group{
+      position:relative;
+    }
+
+    .nav-group-schematic .nav-item-parent{
+      justify-content:space-between;
+    }
+
+    .nav-chevron{
+      font-size:14px;
+      opacity:.7;
+    }
+
+    .nav-sub-schematic{
+      margin-top:4px;
+      margin-left:26px;
+      padding:8px 10px 10px;
+      background:rgba(249,250,251,0.98);
+      border-radius:14px;
+      border:1px solid var(--border-subtle);
+      box-shadow:0 8px 18px rgba(15,23,42,.04);
+      display:none;
+    }
+    .nav-sub-schematic.open{
+      display:block;
+    }
+
+    .nav-sub-title{
+      font-size:11px;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--text-soft);
+      margin-bottom:6px;
+    }
+
+    .schematic-line-row{
+      display:flex;
+      gap:6px;
+      margin-bottom:6px;
+      flex-wrap:wrap;
+    }
+    .schematic-line-btn{
+      border-radius:999px;
+      border:1px solid transparent;
+      background:#eff6ff;
+      padding:4px 9px;
+      font-size:11px;
+      cursor:pointer;
+      color:#1d4ed8;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      transition:background .15s,border-color .15s,color .15s,transform .1s;
+    }
+    .schematic-line-btn:hover{
+      background:#dbeafe;
+      transform:translateY(-1px);
+    }
+    .schematic-line-btn.active{
+      background:#1d4ed8;
+      border-color:#1d4ed8;
+      color:#fff;
+      box-shadow:0 3px 8px rgba(37,99,235,.4);
+    }
+
+    .schematic-f-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .schematic-f-btn{
+      border-radius:999px;
+      border:1px solid var(--border-subtle);
+      background:#f9fafb;
+      padding:4px 10px;
+      font-size:11px;
+      cursor:pointer;
+      color:var(--text-soft);
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      transition:background .15s,border-color .15s,color .15s,transform .1s;
+    }
+    .schematic-f-btn span.code{
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:11px;
+    }
+    .schematic-f-btn:hover{
+      background:#fff;
+      border-color:var(--accent-soft);
+      color:var(--accent);
+      transform:translateY(-1px);
+    }
+
+    .schematic-hint{
+      margin-top:6px;
+      font-size:10px;
+      color:var(--text-soft);
+    }
+
     @media (max-width:900px){
       .page{
         padding-top:16px;
@@ -317,6 +419,10 @@
         width:100%;
         max-width:none;
         margin-top:8px;
+      }
+
+      .nav-sub-schematic{
+        margin-left:0;
       }
 
       .iframe-wrap{
@@ -377,15 +483,58 @@
             <span class="nav-label">PC Manager</span>
           </button>
         </li>
-                <li>
+
+        <!-- Line Schematic：兩層子列表 -->
+        <li class="nav-group nav-group-schematic">
           <button
-            class="nav-item-btn"
-            data-src="Line-Schematic.html"
+            class="nav-item-btn nav-item-parent"
+            type="button"
+            data-role="schematic-parent"
             data-title="Line Schematic"
-            data-sub="Select line (1~4) and section (F12 / F13 / F16 / F201).">
+            data-sub="Select line (1–4) and section (F12 / F13 / F16 / F201).">
             <span class="nav-icon">📊</span>
             <span class="nav-label">Line Schematic</span>
+            <span class="nav-chevron" aria-hidden="true">▾</span>
           </button>
+
+          <div class="nav-sub-schematic" id="schematicSub" aria-label="Line schematic selector">
+            <div class="nav-sub-title">Line Schematic Selector</div>
+
+            <div class="schematic-line-row">
+              <button class="schematic-line-btn active" type="button" data-line="1">
+                Line 1
+              </button>
+              <button class="schematic-line-btn" type="button" data-line="2">
+                Line 2
+              </button>
+              <button class="schematic-line-btn" type="button" data-line="3">
+                Line 3
+              </button>
+              <button class="schematic-line-btn" type="button" data-line="4">
+                Line 4
+              </button>
+            </div>
+
+            <div class="schematic-f-row">
+              <button class="schematic-f-btn" type="button" data-section="F12">
+                <span class="code">F12</span><span>- Winder</span>
+              </button>
+              <button class="schematic-f-btn" type="button" data-section="F13">
+                <span class="code">F13</span><span>- Winder</span>
+              </button>
+              <button class="schematic-f-btn" type="button" data-section="F16">
+                <span class="code">F16</span><span>- Winder</span>
+              </button>
+              <button class="schematic-f-btn" type="button" data-section="F201">
+                <span class="code">F201</span><span>- Winder</span>
+              </button>
+            </div>
+
+            <div class="schematic-hint">
+              Current line will follow your Line 1~4 selection.  
+              File name pattern: <code>Line-[Line]-[Section]-Schematic.html</code>
+            </div>
+          </div>
         </li>
 
         <li>
@@ -504,27 +653,111 @@
       });
     })();
 
-    // 切換模組 (iframe + 標題)
+    // 切換模組 (iframe + 標題) + Line Schematic 兩層子列表
     (function(){
-      const frame = document.getElementById('mainFrame');
+      const frame   = document.getElementById('mainFrame');
       const titleEl = document.getElementById('moduleTitle');
-      const subEl = document.getElementById('moduleSub');
-      const buttons = document.querySelectorAll('.nav-item-btn');
-      const panel = document.getElementById('navPanel');
+      const subEl   = document.getElementById('moduleSub');
+      const panel   = document.getElementById('navPanel');
       const menuBtn = document.getElementById('menuButton');
+      const buttons = document.querySelectorAll('.nav-item-btn');
 
+      const schematicSub   = document.getElementById('schematicSub');
+      const schematicLines = document.querySelectorAll('.schematic-line-btn');
+      const schematicFs    = document.querySelectorAll('.schematic-f-btn');
+      const schematicParent= document.querySelector('.nav-item-parent[data-role="schematic-parent"]');
+
+      let currentLine = '1';
+
+      function setModule(title, sub){
+        if (titleEl) titleEl.textContent = title;
+        if (subEl)   subEl.textContent   = sub;
+      }
+
+      // 一般模組按鈕（Home / PC Manager / Program Backup / Calibration）
       buttons.forEach(btn => {
         btn.addEventListener('click', () => {
+          const role = btn.dataset.role || '';
+
+          // 特例：Line Schematic parent 只負責展開 / 收合子列表，不直接切換 iframe
+          if (role === 'schematic-parent'){
+            const isOpen = schematicSub.classList.toggle('open');
+
+            // 切換 active 樣式（Line Schematic 本身高亮）
+            buttons.forEach(b=> {
+              if (b !== btn) {
+                // 其他模組取消 active
+                if (b.dataset.role !== 'schematic-parent'){
+                  b.classList.remove('active');
+                }
+              }
+            });
+            btn.classList.add('active');
+
+            setModule(
+              btn.dataset.title || 'Line Schematic',
+              btn.dataset.sub || 'Select line and section to view schematics.'
+            );
+
+            return;
+          }
+
+          // 其他有 data-src 的模組
+          const src = btn.dataset.src;
+          if (!src) return;
+
           buttons.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          const src = btn.dataset.src;
+
           const title = btn.dataset.title || 'Module';
-          const sub = btn.dataset.sub || '';
+          const sub   = btn.dataset.sub || '';
           if (frame && src) frame.src = src;
-          titleEl.textContent = title;
-          subEl.textContent = sub;
+          setModule(title, sub);
 
           // 點完選單自動收起 panel（特別是手機）
+          if (panel && panel.classList.contains('open')){
+            panel.classList.remove('open');
+            if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
+          }
+
+          // 關閉 schematic 子列表
+          if (schematicSub){
+            schematicSub.classList.remove('open');
+          }
+        });
+      });
+
+      // Line 1~4：只更新 currentLine 與 active 樣式
+      schematicLines.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const line = btn.getAttribute('data-line') || '1';
+          currentLine = line;
+
+          schematicLines.forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+
+      // F12 / F13 / F16 / F201：依照 currentLine 載入對應 HTML
+      schematicFs.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const section = btn.getAttribute('data-section');
+          if (!section) return;
+
+          // 依照命名規則組出檔名：
+          // Line-[Line]-[Section]-Schematic.html
+          // 例如：Line 1 + F13 → Line-1-F13-Schematic.html
+          const fileName = 'Line-' + currentLine + '-' + section + '-Schematic.html';
+
+          if (frame){
+            frame.src = fileName;
+          }
+
+          const niceTitle = 'Line ' + currentLine + ' – ' + section + ' Schematic';
+          const niceSub   = 'Electrical / PLC schematic for Line ' + currentLine + ' ' + section + ' winder section.';
+          setModule(niceTitle, niceSub);
+
+          // 點完一個 F 選項後，自動把 Modules 收起（手機比較好用）
           if (panel && panel.classList.contains('open')){
             panel.classList.remove('open');
             if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
