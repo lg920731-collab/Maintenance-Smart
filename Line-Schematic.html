@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Maintenance Smart | Line Schematic Selector</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root{
+      --bg:#f3f4f6;
+      --card-bg:#fff;
+      --border-subtle:#e5e7eb;
+      --accent:#2563eb;
+      --accent-soft:#eff6ff;
+      --accent-hover:#1d4ed8;
+      --text:#111827;
+      --text-soft:#6b7280;
+      --radius-xl:18px;
+      --shadow-soft-sm:0 10px 26px rgba(15,23,42,.06);
+      --shadow-soft-md:0 16px 40px rgba(15,23,42,.09);
+      --small-font:13px; --xsmall-font:11px;
+    }
+
+    html[data-style="panther"]{
+      --bg:#ffe4ec;
+    }
+    html[data-style="hangyodon"]{
+      --bg:#dbeafe;
+    }
+
+    *{box-sizing:border-box;}
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+      font-size:15px;
+      background:var(--bg);
+      color:var(--text);
+      padding:16px;
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width:960px;
+      margin:0 auto;
+    }
+
+    .page-head{
+      margin-bottom:16px;
+    }
+    .page-title{
+      margin:0 0 4px;
+      font-size:20px;
+      font-weight:650;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .page-sub{
+      margin:0;
+      font-size:var(--small-font);
+      color:var(--text-soft);
+    }
+
+    .selector-card{
+      display:flex;
+      gap:16px;
+      align-items:stretch;
+      background:var(--card-bg);
+      border-radius:var(--radius-xl);
+      border:1px solid var(--border-subtle);
+      box-shadow:var(--shadow-soft-sm);
+      padding:14px;
+    }
+
+    /* 左側 Line 選擇 */
+    .line-list{
+      width:180px;
+      border-right:1px solid var(--border-subtle);
+      padding-right:12px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .line-title{
+      font-size:13px;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:6px;
+      color:var(--text-soft);
+    }
+    .line-btn{
+      width:100%;
+      border-radius:999px;
+      border:1px solid transparent;
+      background:transparent;
+      padding:8px 10px;
+      font-size:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      cursor:pointer;
+      color:var(--text-soft);
+      transition:background .15s ease,border-color .15s ease,color .15s ease,transform .1s ease;
+    }
+    .line-btn span{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .line-btn small{
+      font-size:11px;
+      opacity:.8;
+    }
+    .line-btn:hover{
+      background:var(--accent-soft);
+      color:var(--accent);
+      transform:translateY(-1px);
+    }
+    .line-btn.active{
+      background:var(--accent);
+      border-color:var(--accent);
+      color:#fff;
+      box-shadow:0 4px 10px rgba(37,99,235,.35);
+    }
+
+    /* 右側 F12/F13/F16/F201 */
+    .f-block{
+      flex:1;
+      min-width:0;
+      padding-left:4px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .f-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .f-title{
+      margin:0;
+      font-size:16px;
+      font-weight:600;
+    }
+    .f-sub{
+      margin:0;
+      font-size:var(--small-font);
+      color:var(--text-soft);
+    }
+
+    .f-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin-top:6px;
+    }
+    .f-card{
+      border-radius:16px;
+      border:1px solid var(--border-subtle);
+      padding:10px 12px;
+      background:#f9fafb;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      transition:background .15s ease,border-color .15s ease,box-shadow .15s ease,transform .1s ease;
+    }
+    .f-label{
+      font-size:14px;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .f-label span.emoji{
+      font-size:16px;
+    }
+    .f-desc{
+      margin:0;
+      font-size:var(--xsmall-font);
+      color:var(--text-soft);
+    }
+    .f-btn{
+      margin-top:3px;
+      align-self:flex-start;
+      border-radius:999px;
+      border:1px solid var(--accent);
+      background:var(--accent);
+      color:#fff;
+      padding:5px 12px;
+      font-size:12px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      text-decoration:none;
+    }
+    .f-card:hover{
+      background:#fff;
+      border-color:var(--accent-soft);
+      box-shadow:0 10px 22px rgba(15,23,42,.08);
+      transform:translateY(-1px);
+    }
+
+    .hint{
+      margin-top:10px;
+      font-size:11px;
+      color:var(--text-soft);
+    }
+
+    @media (max-width:720px){
+      body{
+        padding:12px;
+      }
+      .selector-card{
+        flex-direction:column;
+      }
+      .line-list{
+        width:100%;
+        border-right:none;
+        border-bottom:1px solid var(--border-subtle);
+        padding-right:0;
+        padding-bottom:8px;
+        flex-direction:row;
+        flex-wrap:wrap;
+      }
+      .line-title{
+        width:100%;
+        margin-bottom:4px;
+      }
+      .line-btn{
+        flex:1 1 calc(50% - 4px);
+      }
+      .f-grid{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="page-head">
+      <h1 class="page-title">LINE SCHEMATIC</h1>
+      <p class="page-sub">
+        Select line 1~4 and winder section (F12 / F13 / F16 / F201) to open the schematic HTML.
+      </p>
+    </header>
+
+    <section class="selector-card" aria-label="Line and section selector">
+      <!-- 左側：Line 1~4 -->
+      <div class="line-list">
+        <div class="line-title">LINE</div>
+        <button class="line-btn active" type="button" data-line="1">
+          <span><strong>Line 1</strong><small>Winder</small></span>
+          <span>➜</span>
+        </button>
+        <button class="line-btn" type="button" data-line="2">
+          <span><strong>Line 2</strong><small>Winder</small></span>
+          <span>➜</span>
+        </button>
+        <button class="line-btn" type="button" data-line="3">
+          <span><strong>Line 3</strong><small>Winder</small></span>
+          <span>➜</span>
+        </button>
+        <button class="line-btn" type="button" data-line="4">
+          <span><strong>Line 4</strong><small>Winder</small></span>
+          <span>➜</span>
+        </button>
+      </div>
+
+      <!-- 右側：F12 / F13 / F16 / F201 -->
+      <div class="f-block">
+        <div class="f-header">
+          <h2 class="f-title" id="fTitle">Line 1 – Sections</h2>
+          <p class="f-sub" id="fSub">
+            Choose a winder section to open its detailed electrical / PLC schematic.
+          </p>
+        </div>
+
+        <div class="f-grid">
+          <!-- F12 -->
+          <article class="f-card" data-f="F12">
+            <div class="f-label">
+              <span class="emoji">🔌</span>
+              <span>F12 – Winder Section</span>
+            </div>
+            <p class="f-desc">
+              Drive / motor power, safety circuits and key I/O for F12 section.
+            </p>
+            <button class="f-btn" type="button" data-section="F12">
+              Open F12 schematic →
+            </button>
+          </article>
+
+          <!-- F13 -->
+          <article class="f-card" data-f="F13">
+            <div class="f-label">
+              <span class="emoji">📦</span>
+              <span>F13 – Winder Section</span>
+            </div>
+            <p class="f-desc">
+              Control, feedback and protection for F13 winder area.
+            </p>
+            <button class="f-btn" type="button" data-section="F13">
+              Open F13 schematic →
+            </button>
+          </article>
+
+          <!-- F16 -->
+          <article class="f-card" data-f="F16">
+            <div class="f-label">
+              <span class="emoji">⚙️</span>
+              <span>F16 – Winder Section</span>
+            </div>
+            <p class="f-desc">
+              PLC I/O mapping and auxiliary drives for F16.
+            </p>
+            <button class="f-btn" type="button" data-section="F16">
+              Open F16 schematic →
+            </button>
+          </article>
+
+          <!-- F201 -->
+          <article class="f-card" data-f="F201">
+            <div class="f-label">
+              <span class="emoji">🧵</span>
+              <span>F201 – Winder Section</span>
+            </div>
+            <p class="f-desc">
+              Special functions / modifications for F201 section.
+            </p>
+            <button class="f-btn" type="button" data-section="F201">
+              Open F201 schematic →
+            </button>
+          </article>
+        </div>
+
+        <p class="hint">
+          Hint: This page is loaded inside the main portal iframe. Use the left Modules button to come back here.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    /* --- 套用 portal 的 style (blue / panther / hangyodon) --- */
+    (function(){
+      try{
+        const saved = localStorage.getItem('ms-style') || 'blue';
+        document.documentElement.setAttribute('data-style', saved);
+      }catch(e){}
+    })();
+
+    /* --- Line / Section 選擇 + 對應各自 HTML --- */
+    (function(){
+      const lineButtons = document.querySelectorAll('.line-btn');
+      const fButtons = document.querySelectorAll('.f-btn');
+      const fTitle = document.getElementById('fTitle');
+
+      // 檔名對應表：Line + F → HTML 檔名
+      const fileMap = {
+        '1-F12':'Line-1-F12-Schematic.html',
+        '1-F13':'Line-1-F13-Schematic.html',
+        '1-F16':'Line-1-F16-Schematic.html',
+        '1-F201':'Line-1-F201-Schematic.html',
+
+        '2-F12':'Line-2-F12-Schematic.html',
+        '2-F13':'Line-2-F13-Schematic.html',
+        '2-F16':'Line-2-F16-Schematic.html',
+        '2-F201':'Line-2-F201-Schematic.html',
+
+        '3-F12':'Line-3-F12-Schematic.html',
+        '3-F13':'Line-3-F13-Schematic.html',
+        '3-F16':'Line-3-F16-Schematic.html',
+        '3-F201':'Line-3-F201-Schematic.html',
+
+        '4-F12':'Line-4-F12-Schematic.html',
+        '4-F13':'Line-4-F13-Schematic.html',
+        '4-F16':'Line-4-F16-Schematic.html',
+        '4-F201':'Line-4-F201-Schematic.html'
+      };
+
+      let currentLine = '1';
+
+      function updateLineTitle(){
+        if (fTitle){
+          fTitle.textContent = 'Line ' + currentLine + ' – Sections';
+        }
+      }
+
+      // 點選 Line 1~4
+      lineButtons.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const line = btn.getAttribute('data-line') || '1';
+          currentLine = line;
+
+          lineButtons.forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          updateLineTitle();
+        });
+      });
+
+      // 點選 F12 / F13 / F16 / F201
+      fButtons.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const section = btn.getAttribute('data-section');
+          if (!section) return;
+          const key = currentLine + '-' + section;
+          const file = fileMap[key];
+          if (!file){
+            alert('HTML file not configured for Line ' + currentLine + ' ' + section);
+            return;
+          }
+          // 在 iframe 裡會用 _self 開啟，直接換成對應 schematic 頁面
+          window.location.href = file;
+        });
+      });
+
+      updateLineTitle();
+    })();
+  </script>
+</body>
+</html>
