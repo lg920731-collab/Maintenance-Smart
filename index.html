@@ -260,7 +260,8 @@
       box-shadow:0 4px 10px rgba(37,99,235,.35);
     }
 
-    /* ==== Program Backup 兩層子列表樣式 ==== */
+    /* ==== 兩層子列表共用樣式 ==== */
+    .nav-group-schematic .nav-item-btn,
     .nav-group-backup .nav-item-btn{
       justify-content:space-between;
     }
@@ -268,6 +269,8 @@
       font-size:14px;
       opacity:.7;
     }
+
+    .schematic-panel,
     .backup-panel{
       margin-top:4px;
       margin-left:26px;
@@ -278,9 +281,12 @@
       box-shadow:0 8px 18px rgba(15,23,42,.04);
       display:none;
     }
+    .schematic-panel.open,
     .backup-panel.open{
       display:block;
     }
+
+    .schematic-title,
     .backup-title{
       font-size:11px;
       font-weight:600;
@@ -289,12 +295,15 @@
       color:var(--text-soft);
       margin-bottom:6px;
     }
+
+    .schematic-line-row,
     .backup-line-row{
       display:flex;
       flex-wrap:wrap;
       gap:6px;
       margin-bottom:6px;
     }
+    .schematic-line-btn,
     .backup-line-btn{
       border-radius:999px;
       border:1px solid transparent;
@@ -308,21 +317,26 @@
       gap:4px;
       transition:background .15s,border-color .15s,color .15s,transform .1s;
     }
+    .schematic-line-btn:hover,
     .backup-line-btn:hover{
       background:#dbeafe;
       transform:translateY(-1px);
     }
+    .schematic-line-btn.active,
     .backup-line-btn.active{
       background:#1d4ed8;
       border-color:#1d4ed8;
       color:#fff;
       box-shadow:0 3px 8px rgba(37,99,235,.4);
     }
+
+    .schematic-sec-row,
     .backup-sec-row{
       display:flex;
       flex-wrap:wrap;
       gap:6px;
     }
+    .schematic-sec-btn,
     .backup-sec-btn{
       border-radius:999px;
       border:1px solid var(--border-subtle);
@@ -336,16 +350,19 @@
       gap:4px;
       transition:background .15s,border-color .15s,color .15s,transform .1s;
     }
+    .schematic-sec-btn span.code,
     .backup-sec-btn span.code{
       font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size:11px;
     }
+    .schematic-sec-btn:hover,
     .backup-sec-btn:hover{
       background:#fff;
       border-color:var(--accent-soft);
       color:var(--accent);
       transform:translateY(-1px);
     }
+    .schematic-hint,
     .backup-hint{
       margin-top:6px;
       font-size:10px;
@@ -411,6 +428,7 @@
         margin-top:8px;
       }
 
+      .schematic-panel,
       .backup-panel{
         margin-left:0;
       }
@@ -474,19 +492,51 @@
           </button>
         </li>
 
-        <!-- Line Schematic：保持原本單一按鈕，不改 -->
-        <li>
+        <!-- Line Schematic：兩層列表 -->
+        <li class="nav-group-schematic">
           <button
             class="nav-item-btn"
-            data-src="Line-1-F13-Schematic.html"
+            type="button"
+            data-role="schematic-parent"
             data-title="Line Schematic"
-            data-sub="View production line electrical / PLC schematics.">
+            data-sub="Select line (1~4) and section F12/F13/F16/F201.">
             <span class="nav-icon">📊</span>
             <span class="nav-label">Line Schematic</span>
+            <span class="nav-chevron" aria-hidden="true">▾</span>
           </button>
+
+          <div class="schematic-panel" id="schematicPanel" aria-label="Line schematic selector">
+            <div class="schematic-title">LINE</div>
+            <div class="schematic-line-row">
+              <button class="schematic-line-btn active" type="button" data-line="Line1">Line 1</button>
+              <button class="schematic-line-btn" type="button" data-line="Line2">Line 2</button>
+              <button class="schematic-line-btn" type="button" data-line="Line3">Line 3</button>
+              <button class="schematic-line-btn" type="button" data-line="Line4">Line 4</button>
+            </div>
+
+            <div class="schematic-title">SECTION</div>
+            <div class="schematic-sec-row">
+              <button class="schematic-sec-btn" type="button" data-section="F12" data-label="F12">
+                <span class="code">F12</span>
+              </button>
+              <button class="schematic-sec-btn" type="button" data-section="F13" data-label="F13">
+                <span class="code">F13</span>
+              </button>
+              <button class="schematic-sec-btn" type="button" data-section="F16" data-label="F16">
+                <span class="code">F16</span>
+              </button>
+              <button class="schematic-sec-btn" type="button" data-section="F201" data-label="F201">
+                <span class="code">F201</span>
+              </button>
+            </div>
+
+            <div class="schematic-hint">
+              Default file rule: <code>Line-[lineNumber]-[section]-Schematic.html</code> (e.g. <code>Line-1-F13-Schematic.html</code>)
+            </div>
+          </div>
         </li>
 
-        <!-- Program Backup：改成兩層列表 -->
+        <!-- Program Backup：兩層列表（保持你原本那版） -->
         <li class="nav-group-backup">
           <button
             class="nav-item-btn"
@@ -664,7 +714,7 @@
       });
     })();
 
-    // 切換模組 (iframe + 標題) ＋ Program Backup 二層選單
+    // 切換模組 + Line Schematic / Program Backup 兩層選單
     (function(){
       const frame   = document.getElementById('mainFrame');
       const titleEl = document.getElementById('moduleTitle');
@@ -672,6 +722,11 @@
       const panel   = document.getElementById('navPanel');
       const menuBtn = document.getElementById('menuButton');
       const buttons = document.querySelectorAll('.nav-item-btn');
+
+      const schematicPanel   = document.getElementById('schematicPanel');
+      const schematicLineBtns= document.querySelectorAll('.schematic-line-btn');
+      const schematicSecBtns = document.querySelectorAll('.schematic-sec-btn');
+      let currentSchematicLine = 'Line1';
 
       const backupPanel   = document.getElementById('backupPanel');
       const backupLineBtns= document.querySelectorAll('.backup-line-btn');
@@ -683,23 +738,64 @@
         if (subEl)   subEl.textContent   = sub;
       }
 
-      // 預設主模組切換（Home / PC Manager / Line Schematic / Calibration）
+      function formatLineLabel(lineKey){
+        if (lineKey.startsWith('Line')) return lineKey.replace('Line','Line ');
+        return lineKey;
+      }
+
+      // Schematic 檔名規則：Line-1-F13-Schematic.html
+      function buildSchematicFileName(lineKey, sectionKey){
+        const n = lineKey.replace('Line',''); // Line1 -> 1
+        return 'Line-' + n + '-' + sectionKey + '-Schematic.html';
+      }
+
+      // Program Backup 檔名規則
+      function buildBackupFileName(lineKey, sectionKey){
+        return 'Program-Backup-' + lineKey + '-' + sectionKey + '.html';
+      }
+
+      // 預設主模組切換（Home / PC Manager / Calibration 等）
       buttons.forEach(btn => {
         btn.addEventListener('click', () => {
           const role = btn.dataset.role || '';
 
-          // Program Backup parent：只展開 / 收合子列表，不換 iframe
-          if (role === 'backup-parent'){
-            if (!backupPanel) return;
-            const isOpen = backupPanel.classList.toggle('open');
+          // Line Schematic parent：只展開 / 收合子列表
+          if (role === 'schematic-parent'){
+            if (!schematicPanel) return;
+            const isOpen = schematicPanel.classList.toggle('open');
 
-            // 取消其他「一般模組」的 active
+            // 取消其他一般模組的 active
             buttons.forEach(b=>{
               if (b !== btn && !b.dataset.role){
                 b.classList.remove('active');
               }
             });
             btn.classList.add('active');
+
+            // 若開 schematic，把 backup 關掉
+            if (backupPanel) backupPanel.classList.remove('open');
+
+            setModule(
+              btn.dataset.title || 'Line Schematic',
+              btn.dataset.sub   || 'Select line and section.'
+            );
+            return;
+          }
+
+          // Program Backup parent：只展開 / 收合子列表
+          if (role === 'backup-parent'){
+            if (!backupPanel) return;
+            const isOpen = backupPanel.classList.toggle('open');
+
+            buttons.forEach(b=>{
+              if (b !== btn && !b.dataset.role){
+                b.classList.remove('active');
+              }
+            });
+            btn.classList.add('active');
+
+            // 若開 backup，把 schematic 關掉
+            if (schematicPanel) schematicPanel.classList.remove('open');
 
             setModule(
               btn.dataset.title || 'Program Backup',
@@ -719,15 +815,47 @@
           if (frame && src) frame.src = src;
           setModule(title, sub);
 
-          // 點完選單自動收起 panel（特別是手機）
           if (panel && panel.classList.contains('open')){
             panel.classList.remove('open');
             if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
           }
 
-          // 關閉 Program Backup 子列表
-          if (backupPanel){
-            backupPanel.classList.remove('open');
+          if (schematicPanel) schematicPanel.classList.remove('open');
+          if (backupPanel)    backupPanel.classList.remove('open');
+        });
+      });
+
+      // Line Schematic：Line 1~4
+      schematicLineBtns.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const lineKey = btn.getAttribute('data-line') || 'Line1';
+          currentSchematicLine = lineKey;
+          schematicLineBtns.forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+
+      // Line Schematic：Section F12/F13/F16/F201
+      schematicSecBtns.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const sectionKey   = btn.getAttribute('data-section');
+          const sectionLabel = btn.getAttribute('data-label') || sectionKey || '';
+          if (!sectionKey) return;
+
+          const file = buildSchematicFileName(currentSchematicLine, sectionKey);
+          if (frame){
+            frame.src = file;
+          }
+
+          const lineLabel = formatLineLabel(currentSchematicLine);
+          setModule(
+            'Line Schematic – ' + lineLabel + ' – ' + sectionLabel,
+            'Schematic file: ' + file
+          );
+
+          if (panel && panel.classList.contains('open')){
+            panel.classList.remove('open');
+            if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
           }
         });
       });
@@ -742,20 +870,7 @@
         });
       });
 
-      // 組出 Program Backup 檔名規則
-      function buildBackupFileName(lineKey, sectionKey){
-        // 預設規則：Program-Backup-[LineKey]-[SectionKey].html
-        // 例如：Program-Backup-Line1-F12.html
-        // 如果你檔名不同，可以改成 mapping table。
-        return 'Program-Backup-' + lineKey + '-' + sectionKey + '.html';
-      }
-
-      function formatLineLabel(lineKey){
-        if (lineKey.startsWith('Line')) return lineKey.replace('Line','Line ');
-        return lineKey;
-      }
-
-      // Program Backup：Section 按鈕
+      // Program Backup：Section / System
       backupSecBtns.forEach(btn=>{
         btn.addEventListener('click', ()=>{
           const sectionKey   = btn.getAttribute('data-section');
