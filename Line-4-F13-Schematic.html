@@ -137,6 +137,7 @@
       box-shadow: 0 4px 10px rgba(37,99,235,0.12);
       transition: all 0.15s ease;
       cursor: pointer;
+      display:inline-block;
     }
     .btn:hover {
       background: var(--accent);
@@ -197,6 +198,7 @@
   </div>
 
   <div class="viewer" id="viewer">
+    <!-- 電腦版才會看到這個 object；手機版會被 JS 換成按鈕 -->
     <object id="pdfObject" data="Line-4-F13-Schematic.pdf#view=FitH" type="application/pdf">
       <div class="fallback">
         Your browser cannot display embedded PDFs.<br>
@@ -208,14 +210,32 @@
   <script>
     (function () {
       const pdfUrl = "Line-4-F13-Schematic.pdf";
+      const openNewTab = document.getElementById('openNewTab');
+      const viewer = document.getElementById('viewer');
 
-      document.getElementById('openNewTab').href = pdfUrl;
+      openNewTab.href = pdfUrl;
 
+      const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent);
+
+      // 手機：不要內嵌 PDF，改成只顯示一個按鈕
+      if (isMobile) {
+        viewer.innerHTML = `
+          <div class="fallback">
+            On mobile, tap the button below to view the full PDF.<br><br>
+            <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
+          </div>
+        `;
+        return;
+      }
+
+      // 電腦：保留 <object> 內嵌 PDF，失敗時顯示 fallback
       const obj = document.getElementById('pdfObject');
-      obj.addEventListener('error', () => {
-        document.getElementById('viewer').innerHTML =
-          '<div class="fallback">Unable to load PDF. <a class="btn" href="' + pdfUrl + '">Open PDF</a></div>';
-      });
+      if (obj) {
+        obj.addEventListener('error', () => {
+          viewer.innerHTML =
+            '<div class="fallback">Unable to load PDF. <a class="btn" href="' + pdfUrl + '">Open PDF</a></div>';
+        });
+      }
     })();
   </script>
 
