@@ -67,20 +67,19 @@
     .top-left{
       display:flex;
       flex-direction:column;
-      justify-content:space-between;  /* 上 logo、下按鈕 */
+      justify-content:space-between;
       gap:10px;
       align-items:flex-start;
-      min-height:72px;                /* 讓按鈕靠左下 */
+      min-height:72px;
     }
 
     .brand-wrap{display:flex;align-items:center;gap:10px}
 
-    /* 左上主題 icon：藍色主題用漸層方塊，其他主題顯示角色頭像 */
     .mascot{
       width:28px;
       height:28px;
       border-radius:9px;
-      background:radial-gradient(circle at 30% 0,#bfdbfe,#2563eb); /* 藍色預設漸層 */
+      background:radial-gradient(circle at 30% 0,#bfdbfe,#2563eb);
       box-shadow:0 0 10px rgba(37,99,235,0.35);
       flex-shrink:0;
       object-fit:cover;
@@ -100,7 +99,6 @@
     }
     .brand-sub{font-size:13px;color:var(--text-soft)}
 
-    /* Modules 按鈕（topbar 左下角） */
     .menu-button{
       border-radius:999px;
       border:1px solid #e5e7eb;
@@ -156,7 +154,6 @@
       color:var(--text);
     }
 
-    /* 整體 workspace：只剩右側內容 */
     .workspace{
       min-height:60vh;
     }
@@ -177,7 +174,6 @@
     .section-title{font-size:18px;font-weight:600;color:var(--text);margin:0}
     .section-sub{font-size:var(--small-font);color:var(--text-soft);margin:2px 0 0}
 
-    /* iframe 區域 */
     .iframe-wrap{
       background:var(--card-bg);
       border-radius:var(--radius-xl);
@@ -195,11 +191,10 @@
       background:#111827;
     }
 
-    /* Modules 展開面板（按鈕打開的功能列） */
     .nav-panel{
       position:absolute;
       left:24px;
-      top:calc(24px + 72px); /* 大約在 topbar 下方 */
+      top:calc(24px + 72px);
       max-width:260px;
       background:rgba(255,255,255,0.97);
       border-radius:18px;
@@ -260,21 +255,19 @@
       box-shadow:0 4px 10px rgba(37,99,235,.35);
     }
 
-    /* ===== Line Schematic 兩層子列表樣式 ===== */
+    /* === 兩層子列表共用樣式 === */
     .nav-group{
       position:relative;
     }
-
-    .nav-group-schematic .nav-item-parent{
+    .nav-item-parent{
       justify-content:space-between;
     }
-
     .nav-chevron{
       font-size:14px;
       opacity:.7;
     }
 
-    .nav-sub-schematic{
+    .nav-sub-box{
       margin-top:4px;
       margin-left:26px;
       padding:8px 10px 10px;
@@ -284,7 +277,7 @@
       box-shadow:0 8px 18px rgba(15,23,42,.04);
       display:none;
     }
-    .nav-sub-schematic.open{
+    .nav-sub-box.open{
       display:block;
     }
 
@@ -297,13 +290,13 @@
       margin-bottom:6px;
     }
 
-    .schematic-line-row{
+    .line-row{
       display:flex;
       gap:6px;
       margin-bottom:6px;
       flex-wrap:wrap;
     }
-    .schematic-line-btn{
+    .line-pill{
       border-radius:999px;
       border:1px solid transparent;
       background:#eff6ff;
@@ -316,23 +309,23 @@
       gap:4px;
       transition:background .15s,border-color .15s,color .15s,transform .1s;
     }
-    .schematic-line-btn:hover{
+    .line-pill:hover{
       background:#dbeafe;
       transform:translateY(-1px);
     }
-    .schematic-line-btn.active{
+    .line-pill.active{
       background:#1d4ed8;
       border-color:#1d4ed8;
       color:#fff;
       box-shadow:0 3px 8px rgba(37,99,235,.4);
     }
 
-    .schematic-f-row{
+    .section-row{
       display:flex;
       flex-wrap:wrap;
       gap:6px;
     }
-    .schematic-f-btn{
+    .section-pill{
       border-radius:999px;
       border:1px solid var(--border-subtle);
       background:#f9fafb;
@@ -345,18 +338,18 @@
       gap:4px;
       transition:background .15s,border-color .15s,color .15s,transform .1s;
     }
-    .schematic-f-btn span.code{
+    .section-pill span.code{
       font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size:11px;
     }
-    .schematic-f-btn:hover{
+    .section-pill:hover{
       background:#fff;
       border-color:var(--accent-soft);
       color:var(--accent);
       transform:translateY(-1px);
     }
 
-    .schematic-hint{
+    .nav-hint{
       margin-top:6px;
       font-size:10px;
       color:var(--text-soft);
@@ -376,10 +369,9 @@
         padding:14px 14px 18px;
       }
 
-      /* 手機版：把 top-left 展開，裡面的東西當成 topbar 直列項目 */
       .top-left{
         display:contents;
-        min-height:0;        /* 原本的 min-height 取消 */
+        min-height:0;
       }
 
       .brand-main{
@@ -396,16 +388,15 @@
         justify-content:flex-start;
         gap:6px;
         flex-wrap:wrap;
-        order:2;             /* 在品牌之後、Modules 之前 */
+        order:2;
       }
 
       .top-meta .pill{
         flex-shrink:0;
       }
 
-      /* 手機版 Modules 按鈕：放在 topbar 最下面，佔滿一行 */
       .menu-button{
-        order:3;             /* 整個 topbar 的最後一個 */
+        order:3;
         align-self:stretch;
         justify-content:center;
         text-align:center;
@@ -421,7 +412,7 @@
         margin-top:8px;
       }
 
-      .nav-sub-schematic{
+      .nav-sub-box{
         margin-left:0;
       }
 
@@ -459,7 +450,7 @@
       </div>
     </div>
 
-    <!-- Modules 功能列：一開始收起來，按左下角按鈕展開 -->
+    <!-- Modules -->
     <nav class="nav-panel" id="navPanel" aria-label="Module navigation">
       <ul class="nav-list">
         <li>
@@ -484,69 +475,151 @@
           </button>
         </li>
 
-        <!-- Line Schematic：兩層子列表 -->
-        <li class="nav-group nav-group-schematic">
+        <!-- Line Schematic：兩層 -->
+        <li class="nav-group">
           <button
             class="nav-item-btn nav-item-parent"
             type="button"
             data-role="schematic-parent"
             data-title="Line Schematic"
-            data-sub="Select line (1–4) and section (F12 / F13 / F16 / F201).">
+            data-sub="Select line (1–4 / Reclaim) and section.">
             <span class="nav-icon">📊</span>
             <span class="nav-label">Line Schematic</span>
             <span class="nav-chevron" aria-hidden="true">▾</span>
           </button>
 
-          <div class="nav-sub-schematic" id="schematicSub" aria-label="Line schematic selector">
-            <div class="nav-sub-title">Line Schematic Selector</div>
+          <div class="nav-sub-box" id="schematicBox" aria-label="Line schematic selector">
+            <div class="nav-sub-title">LINE</div>
+            <div class="line-row" id="schematicLineRow">
+              <button class="line-pill active" type="button" data-line="Line1">Line 1</button>
+              <button class="line-pill" type="button" data-line="Line2">Line 2</button>
+              <button class="line-pill" type="button" data-line="Line3">Line 3</button>
+              <button class="line-pill" type="button" data-line="Line4">Line 4</button>
+              <button class="line-pill" type="button" data-line="Reclaim">Reclaim</button>
+            </div>
 
-            <div class="schematic-line-row">
-              <button class="schematic-line-btn active" type="button" data-line="1">
-                Line 1
+            <div class="nav-sub-title">SECTION</div>
+            <div class="section-row" id="schematicSectionRow">
+              <button class="section-pill" type="button" data-section="F12">
+                <span class="code">F12</span><span>Winder</span>
               </button>
-              <button class="schematic-line-btn" type="button" data-line="2">
-                Line 2
+              <button class="section-pill" type="button" data-section="F13">
+                <span class="code">F13</span><span>Winder</span>
               </button>
-              <button class="schematic-line-btn" type="button" data-line="3">
-                Line 3
+              <button class="section-pill" type="button" data-section="F16">
+                <span class="code">F16</span><span>Winder</span>
               </button>
-              <button class="schematic-line-btn" type="button" data-line="4">
-                Line 4
+              <button class="section-pill" type="button" data-section="F42">
+                <span class="code">F42</span>
+              </button>
+              <button class="section-pill" type="button" data-section="F55">
+                <span class="code">F55</span>
+              </button>
+              <button class="section-pill" type="button" data-section="F201">
+                <span class="code">F201</span>
+              </button>
+              <button class="section-pill" type="button" data-section="FlameTreater">
+                <span class="code">Flame Treater</span>
+              </button>
+              <button class="section-pill" type="button" data-section="MainBlending">
+                <span class="code">Main Blending</span>
+              </button>
+              <button class="section-pill" type="button" data-section="MainLoading">
+                <span class="code">Main Loading</span>
+              </button>
+              <button class="section-pill" type="button" data-section="ScadaPC1PC2">
+                <span class="code">Scada PC1 PC2</span>
+              </button>
+              <button class="section-pill" type="button" data-section="SoftalTreater">
+                <span class="code">Softal Treater</span>
+              </button>
+              <button class="section-pill" type="button" data-section="TDOBruckpanel">
+                <span class="code">TDO Bruckpanel</span>
+              </button>
+              <button class="section-pill" type="button" data-section="WinderCarrgeBruckpanel">
+                <span class="code">Winder Carrge Bruckpanel</span>
               </button>
             </div>
 
-            <div class="schematic-f-row">
-              <button class="schematic-f-btn" type="button" data-section="F12">
-                <span class="code">F12</span><span>- Winder</span>
-              </button>
-              <button class="schematic-f-btn" type="button" data-section="F13">
-                <span class="code">F13</span><span>- Winder</span>
-              </button>
-              <button class="schematic-f-btn" type="button" data-section="F16">
-                <span class="code">F16</span><span>- Winder</span>
-              </button>
-              <button class="schematic-f-btn" type="button" data-section="F201">
-                <span class="code">F201</span><span>- Winder</span>
-              </button>
-            </div>
-
-            <div class="schematic-hint">
-              Current line will follow your Line 1~4 selection.  
-              File name pattern: <code>Line-[Line]-[Section]-Schematic.html</code>
+            <div class="nav-hint">
+              Change line on top, then click a section to open the schematic inside this iframe.
             </div>
           </div>
         </li>
 
-        <li>
+        <!-- Program Backup：兩層 -->
+        <li class="nav-group">
           <button
-            class="nav-item-btn"
-            data-src="Program-Backup-Line-1.html"
+            class="nav-item-btn nav-item-parent"
+            type="button"
+            data-role="backup-parent"
             data-title="Program Backup"
-            data-sub="PLC / SCADA backup pages by line and system.">
+            data-sub="Select line and system (PLC / SCADA / Flame Treater ...).">
             <span class="nav-icon">📁</span>
             <span class="nav-label">Program Backup</span>
+            <span class="nav-chevron" aria-hidden="true">▾</span>
           </button>
+
+          <div class="nav-sub-box" id="backupBox" aria-label="Program backup selector">
+            <div class="nav-sub-title">LINE</div>
+            <div class="line-row" id="backupLineRow">
+              <button class="line-pill active" type="button" data-line="Line1">Line 1</button>
+              <button class="line-pill" type="button" data-line="Line2">Line 2</button>
+              <button class="line-pill" type="button" data-line="Line3">Line 3</button>
+              <button class="line-pill" type="button" data-line="Line4">Line 4</button>
+              <button class="line-pill" type="button" data-line="Reclaim">Reclaim</button>
+            </div>
+
+            <div class="nav-sub-title">SYSTEM</div>
+            <div class="section-row" id="backupSectionRow">
+              <button class="section-pill" type="button" data-section="F12">
+                <span class="code">F12</span>
+              </button>
+              <button class="section-pill" type="button" data-section="F13">
+                <span class="code">F13</span>
+              </button>
+              <button class="section-pill" type="button" data-section="F16">
+                <span class="code">F16</span>
+              </button>
+              <button class="section-pill" type="button" data-section="F42">
+                <span class="code">F42</span>
+              </button>
+              <button class="section-pill" type="button" data-section="F55">
+                <span class="code">F55</span>
+              </button>
+              <button class="section-pill" type="button" data-section="F201">
+                <span class="code">F201</span>
+              </button>
+              <button class="section-pill" type="button" data-section="FlameTreater">
+                <span class="code">Flame Treater</span>
+              </button>
+              <button class="section-pill" type="button" data-section="MainBlending">
+                <span class="code">Main Blending</span>
+              </button>
+              <button class="section-pill" type="button" data-section="MainLoading">
+                <span class="code">Main Loading</span>
+              </button>
+              <button class="section-pill" type="button" data-section="ScadaPC1PC2">
+                <span class="code">Scada PC1 PC2</span>
+              </button>
+              <button class="section-pill" type="button" data-section="SoftalTreater">
+                <span class="code">Softal Treater</span>
+              </button>
+              <button class="section-pill" type="button" data-section="TDOBruckpanel">
+                <span class="code">TDO Bruckpanel</span>
+              </button>
+              <button class="section-pill" type="button" data-section="WinderCarrgeBruckpanel">
+                <span class="code">Winder Carrge Bruckpanel</span>
+              </button>
+            </div>
+
+            <div class="nav-hint">
+              This will open your backup HTML (not PDF) inside the iframe using the mapping table in JavaScript.
+            </div>
+          </div>
         </li>
+
+        <!-- 其他 (例如 Calibration) -->
         <li>
           <button
             class="nav-item-btn"
@@ -579,7 +652,7 @@
   </div>
 
   <script>
-    /* ---------- Modified Date：用這個 HTML 檔最後修改時間 ---------- */
+    /* ---------- Modified Date ---------- */
     (function () {
       function updateModDate() {
         var el = document.getElementById('modDate');
@@ -641,7 +714,6 @@
         menuBtn.addEventListener('click', togglePanel);
       }
 
-      // 點擊頁面其他地方就關閉（桌機用，比較乾淨）
       document.addEventListener('click', (e)=>{
         if (!panel.classList.contains('open')) return;
         const insidePanel = panel.contains(e.target);
@@ -653,7 +725,7 @@
       });
     })();
 
-    // 切換模組 (iframe + 標題) + Line Schematic 兩層子列表
+    // ====== 主模組切換 + 兩層子列表邏輯 ======
     (function(){
       const frame   = document.getElementById('mainFrame');
       const titleEl = document.getElementById('moduleTitle');
@@ -662,102 +734,166 @@
       const menuBtn = document.getElementById('menuButton');
       const buttons = document.querySelectorAll('.nav-item-btn');
 
-      const schematicSub   = document.getElementById('schematicSub');
-      const schematicLines = document.querySelectorAll('.schematic-line-btn');
-      const schematicFs    = document.querySelectorAll('.schematic-f-btn');
-      const schematicParent= document.querySelector('.nav-item-parent[data-role="schematic-parent"]');
+      const schematicBox   = document.getElementById('schematicBox');
+      const schematicLines = document.querySelectorAll('#schematicLineRow .line-pill');
+      const schematicSecs  = document.querySelectorAll('#schematicSectionRow .section-pill');
 
-      let currentLine = '1';
+      const backupBox      = document.getElementById('backupBox');
+      const backupLines    = document.querySelectorAll('#backupLineRow .line-pill');
+      const backupSecs     = document.querySelectorAll('#backupSectionRow .section-pill');
+
+      let currentSchematicLine = 'Line1';
+      let currentBackupLine    = 'Line1';
 
       function setModule(title, sub){
         if (titleEl) titleEl.textContent = title;
         if (subEl)   subEl.textContent   = sub;
       }
 
-      // 一般模組按鈕（Home / PC Manager / Program Backup / Calibration）
+      // ===== 檔名 mapping（這裡改成你的實際檔名） =====
+      // key 形式： line + '|' + sectionKey
+      const schematicMap = {
+        // 範例：'Line1|F12': 'Line-1-F12-Schematic.html',
+        // 下面先放示意，你可以換成真的檔名
+        'Line1|F12':'Line-1-F12-Schematic.html',
+        'Line1|F13':'Line-1-F13-Schematic.html',
+        'Line1|F16':'Line-1-F16-Schematic.html',
+        'Line1|F42':'Line-1-F42-Schematic.html',
+        'Line1|F55':'Line-1-F55-Schematic.html',
+        'Line1|F201':'Line-1-F201-Schematic.html',
+        // 其他 Line / section 依需要加上去
+      };
+
+      const backupMap = {
+        // 範例：'Line1|F12':'PB-Line1-F12.html',
+        //      'Reclaim|ScadaPC1PC2':'PB-Reclaim-Scada.html'
+        'Line1|F12':'PB-Line1-F12.html'
+        // 其他組合自己補
+      };
+
+      // ===== 主按鈕 (Home / PC Manager / Calibration / parent們) =====
       buttons.forEach(btn => {
         btn.addEventListener('click', () => {
           const role = btn.dataset.role || '';
+          const title = btn.dataset.title || '';
+          const sub   = btn.dataset.sub   || '';
 
-          // 特例：Line Schematic parent 只負責展開 / 收合子列表，不直接切換 iframe
           if (role === 'schematic-parent'){
-            const isOpen = schematicSub.classList.toggle('open');
+            // 展開 / 收起 schematic 子列表
+            const isOpen = schematicBox.classList.toggle('open');
 
-            // 切換 active 樣式（Line Schematic 本身高亮）
-            buttons.forEach(b=> {
-              if (b !== btn) {
-                // 其他模組取消 active
-                if (b.dataset.role !== 'schematic-parent'){
-                  b.classList.remove('active');
-                }
+            // 設定 active（但不要把其他 parent 清掉樣式）
+            buttons.forEach(b=>{
+              if (b !== btn && !b.dataset.role){
+                b.classList.remove('active');
               }
             });
             btn.classList.add('active');
-
-            setModule(
-              btn.dataset.title || 'Line Schematic',
-              btn.dataset.sub || 'Select line and section to view schematics.'
-            );
+            setModule(title || 'Line Schematic', sub || 'Select line and section.');
 
             return;
           }
 
-          // 其他有 data-src 的模組
+          if (role === 'backup-parent'){
+            const isOpen = backupBox.classList.toggle('open');
+
+            buttons.forEach(b=>{
+              if (b !== btn && !b.dataset.role){
+                b.classList.remove('active');
+              }
+            });
+            btn.classList.add('active');
+            setModule(title || 'Program Backup', sub || 'Select line and system.');
+
+            return;
+          }
+
           const src = btn.dataset.src;
           if (!src) return;
 
           buttons.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
 
-          const title = btn.dataset.title || 'Module';
-          const sub   = btn.dataset.sub || '';
           if (frame && src) frame.src = src;
-          setModule(title, sub);
+          setModule(title || 'Module', sub || '');
 
-          // 點完選單自動收起 panel（特別是手機）
           if (panel && panel.classList.contains('open')){
             panel.classList.remove('open');
             if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
           }
 
-          // 關閉 schematic 子列表
-          if (schematicSub){
-            schematicSub.classList.remove('open');
-          }
+          if (schematicBox) schematicBox.classList.remove('open');
+          if (backupBox)    backupBox.classList.remove('open');
         });
       });
 
-      // Line 1~4：只更新 currentLine 與 active 樣式
+      // ===== Line Schematic：Line 選擇 =====
       schematicLines.forEach(btn=>{
         btn.addEventListener('click', ()=>{
-          const line = btn.getAttribute('data-line') || '1';
-          currentLine = line;
-
+          const line = btn.getAttribute('data-line') || 'Line1';
+          currentSchematicLine = line;
           schematicLines.forEach(b=>b.classList.remove('active'));
           btn.classList.add('active');
         });
       });
 
-      // F12 / F13 / F16 / F201：依照 currentLine 載入對應 HTML
-      schematicFs.forEach(btn=>{
+      // ===== Line Schematic：Section 選擇 =====
+      schematicSecs.forEach(btn=>{
         btn.addEventListener('click', ()=>{
           const section = btn.getAttribute('data-section');
           if (!section) return;
 
-          // 依照命名規則組出檔名：
-          // Line-[Line]-[Section]-Schematic.html
-          // 例如：Line 1 + F13 → Line-1-F13-Schematic.html
-          const fileName = 'Line-' + currentLine + '-' + section + '-Schematic.html';
-
-          if (frame){
-            frame.src = fileName;
+          const key = currentSchematicLine + '|' + section;
+          const file = schematicMap[key];
+          if (!file){
+            alert('No schematic file mapped for: ' + key);
+            return;
           }
+          if (frame){
+            frame.src = file;
+          }
+          setModule(
+            'Schematic – ' + currentSchematicLine + ' – ' + section,
+            'Viewing schematic: ' + key
+          );
 
-          const niceTitle = 'Line ' + currentLine + ' – ' + section + ' Schematic';
-          const niceSub   = 'Electrical / PLC schematic for Line ' + currentLine + ' ' + section + ' winder section.';
-          setModule(niceTitle, niceSub);
+          if (panel && panel.classList.contains('open')){
+            panel.classList.remove('open');
+            if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
+          }
+        });
+      });
 
-          // 點完一個 F 選項後，自動把 Modules 收起（手機比較好用）
+      // ===== Program Backup：Line 選擇 =====
+      backupLines.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const line = btn.getAttribute('data-line') || 'Line1';
+          currentBackupLine = line;
+          backupLines.forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+
+      // ===== Program Backup：Section / System 選擇 =====
+      backupSecs.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const section = btn.getAttribute('data-section');
+          if (!section) return;
+
+          const key = currentBackupLine + '|' + section;
+          const file = backupMap[key];
+          if (!file){
+            alert('No backup page mapped for: ' + key);
+            return;
+          }
+          if (frame){
+            frame.src = file;  // 這裡可以是 HTML、或資料夾內 index.html
+          }
+          setModule(
+            'Program Backup – ' + currentBackupLine + ' – ' + section,
+            'Program / file backup view: ' + key
+          );
+
           if (panel && panel.classList.contains('open')){
             panel.classList.remove('open');
             if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
@@ -766,7 +902,7 @@
       });
     })();
 
-    // Style Theme (blue / panther / hangyodon) – 點左上 icon 切換
+    // Style Theme (blue / panther / hangyodon)
     (function(){
       const STYLE_KEY = 'ms-style';
       const root = document.documentElement;
@@ -774,29 +910,19 @@
       const styles = ['blue', 'panther', 'hangyodon'];
 
       const themeConfig = {
-        blue: {
-          bgImage: ''                  // 用預設 CSS 漸層
-        },
-        panther: {
-          bgImage: 'url("pinkpanther.png")'
-        },
-        hangyodon: {
-          bgImage: 'url("hangyodon.png")'
-        }
+        blue: { bgImage: '' },
+        panther: { bgImage: 'url("pinkpanther.png")' },
+        hangyodon: { bgImage: 'url("hangyodon.png")' }
       };
 
       function applyStyle(style){
         const s = themeConfig[style] ? style : 'blue';
         root.setAttribute('data-style', s);
         const cfg = themeConfig[s];
-
         if (mascot){
-          // 有設定圖片就蓋掉，沒有就用預設漸層方塊
           mascot.style.backgroundImage = cfg.bgImage || '';
         }
-
         localStorage.setItem(STYLE_KEY, s);
-
         if (window._msSyncFrameStyle){
           setTimeout(window._msSyncFrameStyle, 30);
         }
