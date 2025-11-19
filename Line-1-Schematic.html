@@ -5,7 +5,7 @@
   <title>Line 1 Schematic | Maintenance Smart</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- 保留 style（blue / panther / hangyodon），移除 dark mode -->
+  <!-- 保留 style（blue / panther / hangyodon） -->
   <script>
     (function () {
       const style = localStorage.getItem('ms-style') || 'blue';
@@ -161,9 +161,7 @@
       position: relative;
       z-index: 2;
     }
-    .viewer object,
-    .viewer iframe,
-    .viewer embed {
+    .viewer iframe {
       width: 100%;
       height: 100%;
       border: 0;
@@ -198,13 +196,8 @@
   </div>
 
   <div class="viewer" id="viewer">
-    <!-- 電腦版才會看到這個 object；手機版會被 JS 換成按鈕 -->
-    <object id="pdfObject" data="" type="application/pdf">
-      <div class="fallback">
-        Your browser cannot display embedded PDFs.<br>
-        <a class="btn" href="#" id="fallbackLink">Download / Open PDF</a>
-      </div>
-    </object>
+    <!-- 電腦 / iPad：用 pdf.js viewer -->
+    <iframe id="pdfFrame" title="PDF viewer"></iframe>
   </div>
 
   <script>
@@ -220,14 +213,19 @@
         sec = 'F13'; // 不在清單就用預設 F13
       }
 
+      // 原始 PDF 檔名
       const pdfUrl = "Line-1-" + sec + "-Schematic.pdf";
 
-      const openNewTab = document.getElementById('openNewTab');
-      const viewer = document.getElementById('viewer');
-      const obj = document.getElementById('pdfObject');
-      const fallbackLink = document.getElementById('fallbackLink');
-      const titleEl = document.getElementById('pageTitle');
-      const subEl = document.getElementById('pageSub');
+      // pdf.js viewer 路徑（相對於這個 html）
+      // 你的 pdfjs 放在 /pdfjs/web/viewer.html
+      const pdfjsViewerBase = "pdfjs/web/viewer.html";
+      const viewerUrl = pdfjsViewerBase + "?file=" + encodeURIComponent(pdfUrl) + "#zoom=page-fit";
+
+      const openNewTab   = document.getElementById('openNewTab');
+      const viewer       = document.getElementById('viewer');
+      const frame        = document.getElementById('pdfFrame');
+      const titleEl      = document.getElementById('pageTitle');
+      const subEl        = document.getElementById('pageSub');
 
       // 更新標題顯示現在是哪一個 section
       if (titleEl){
@@ -237,39 +235,31 @@
         subEl.textContent = "Production Line 1 – Section " + sec + " Wiring and PLC Diagram";
       }
 
-      // 按鈕 / 連結指向目前的 PDF
-      if (openNewTab) openNewTab.href = pdfUrl;
-      if (fallbackLink) fallbackLink.href = pdfUrl;
-      if (obj) obj.data = pdfUrl + "#view=FitH";
+      // 手機偵測：只把 iPhone / Android Phone 當手機
+      const isMobilePhone = /iphone|ipod|android/i.test(navigator.userAgent);
 
-       /** -------------------------------
-       /** -------------------------------
-       * 3. 手機版 → 不內嵌 PDF + 不顯示 openNewTab 按鈕
-       * ------------------------------- */
-      const isMobile = /iphone|ipod|android/i.test(navigator.userAgent);
-
-      if (isMobile) {
-        // 隱藏 Open PDF in New Tab
-        const openNewTab = document.getElementById("openNewTab");
+      if (isMobilePhone) {
+        // 手機板：隱藏上面的 "Open PDF in New Tab" 按鈕
         if (openNewTab) openNewTab.style.display = "none";
 
-        // 顯示手機版 PDF 開啟按鈕
-        viewer.innerHTML = `
-          <div class="fallback">
-            Tap the button below to open PDF.<br><br>
-            <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
-          </div>`;
+        // viewer 改成顯示一顆按鈕，直接開原始 PDF
+        if (viewer) {
+          viewer.innerHTML = `
+            <div class="fallback">
+              Tap the button below to open PDF.<br><br>
+              <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
+            </div>`;
+        }
         return;
       }
 
-
-
-      // 電腦：保留 <object> 內嵌 PDF，失敗時顯示 fallback
-      if (obj && viewer) {
-        obj.addEventListener('error', () => {
-          viewer.innerHTML =
-            '<div class="fallback">Unable to load PDF. <a class="btn" href="' + pdfUrl + '">Open PDF</a></div>';
-        });
+      // 電腦 + iPad：用 pdf.js viewer 內嵌
+      if (frame) {
+        frame.src = viewerUrl;
+      }
+      if (openNewTab) {
+        // 在新分頁也開 pdf.js viewer
+        openNewTab.href = viewerUrl;
       }
     })();
   </script>
