@@ -245,23 +245,40 @@
       subEl.textContent = "Production Line " + line + " – Section " + sec + " Wiring and PLC Diagram";
     }
 
-    // 手機偵測：只把 iPhone / Android Phone 當手機（iPad 當電腦）
-    const isMobilePhone = /iphone|ipod|android/i.test(navigator.userAgent);
+          // 手機 / 平板偵測
+      const ua      = navigator.userAgent.toLowerCase();
+      const isIPhone= ua.includes("iphone") || ua.includes("ipod");
+      const isIPad  = ua.includes("ipad");
+      const isAndroid= ua.includes("android");
+      // 把 iPhone + Android phone 視為「小手機」
+      const isSmallPhone = isIPhone || (isAndroid && !isIPad);
 
-    if (isMobilePhone) {
-      // 手機板：隱藏上面的 "Open PDF in New Tab" 按鈕
-      if (openNewTab) openNewTab.style.display = "none";
+      if (isSmallPhone || isIPad) {
+        // 小手機 / iPad 都不要內嵌 viewer，避免 iframe + PDF 奇怪限制
+        if (openNewTab) openNewTab.style.display = "none";
 
-      // viewer 改成顯示一顆按鈕，直接開原始 PDF（根目錄）
-      if (viewer) {
-        viewer.innerHTML = `
-          <div class="fallback">
-            Tap the button below to open PDF.<br><br>
-            <a class="btn" href="${pdfFileName}" target="_blank" rel="noopener">Open PDF ↗</a>
-          </div>`;
+        // iPad → 用 pdf.js viewer 開（可以翻頁）
+        // 手機 → 直接開原始 PDF，由系統 viewer 顯示
+        const targetUrl = isIPad ? viewerUrl : pdfFileName;
+
+        if (viewer) {
+          viewer.innerHTML = `
+            <div class="fallback">
+              Tap the button below to open PDF.<br><br>
+              <a class="btn" href="${targetUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
+            </div>`;
+        }
+        return;
       }
-      return;
-    }
+
+      // 電腦：用 pdf.js viewer 內嵌
+      if (frame) {
+        frame.src = viewerUrl;
+      }
+      if (openNewTab) {
+        openNewTab.href = viewerUrl;
+      }
+
 
     // 電腦 + iPad：用 pdf.js viewer 內嵌
     if (frame) {
