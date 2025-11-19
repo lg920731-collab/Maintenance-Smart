@@ -5,6 +5,7 @@
   <title>Line 3 Schematic | Maintenance Smart</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- 保留 style（blue / panther / hangyodon） -->
   <script>
     (function () {
       const style = localStorage.getItem('ms-style') || 'blue';
@@ -24,6 +25,7 @@
     }
 
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -40,6 +42,7 @@
       transition: background .25s ease, color .25s ease;
     }
 
+    /* style 背景—與主頁同步 */
     html[data-style="panther"] body{
       background:
         radial-gradient(circle at top,rgba(244,114,182,.28),transparent),
@@ -51,26 +54,77 @@
         var(--bg);
     }
 
+    /* 角色背景 */
+    .side-panther,
+    .side-hangyodon{
+      position:fixed;
+      top:50%;
+      transform:translateY(-50%);
+      width:320px;
+      opacity:.9;
+      z-index:1;
+      pointer-events:none;
+      user-select:none;
+      transition: transform .25s ease, opacity .25s ease;
+      display:none;
+    }
+
+    .side-panther.left{left:1.5%; transform:translateY(-50%) scaleX(1);}
+    .side-panther.right{right:1.5%; transform:translateY(-50%) scaleX(1);}
+
+    .side-hangyodon.left{left:1.5%; transform:translateY(-50%) scaleX(-1);}
+    .side-hangyodon.right{right:1.5%; transform:translateY(-50%) scaleX(-1);}
+
+    html[data-style="panther"] .side-panther{display:block;}
+    html[data-style="hangyodon"] .side-hangyodon{display:block;}
+
+    @media (max-width: 900px){
+      html[data-style="panther"] .side-panther.left,
+      html[data-style="hangyodon"] .side-hangyodon.left{
+        display:none !important;
+      }
+
+      html[data-style="panther"] .side-panther.right,
+      html[data-style="hangyodon"] .side-hangyodon.right{
+        display:block !important;
+        position:fixed !important;
+        left:50% !important;
+        right:auto !important;
+        top:50% !important;
+        transform:translate(-50%, -50%) !important;
+        width:260px;
+        opacity:.7;
+      }
+    }
+
+    /* Title */
     h1 {
       color: var(--accent);
       font-size: 22px;
       font-weight: 600;
       margin: 0 0 6px 0;
       text-align: center;
+      position: relative;
+      z-index: 2;
     }
     .subtitle {
       font-size: 13px;
       color: var(--text-soft);
       margin: 0 0 10px 0;
       text-align: center;
+      position: relative;
+      z-index: 2;
     }
 
+    /* Button */
     .toolbar {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
       justify-content: center;
       margin-bottom: 10px;
+      position: relative;
+      z-index: 2;
     }
     .btn {
       font-size: 13px;
@@ -92,6 +146,7 @@
       border-color: var(--accent-hover);
     }
 
+    /* PDF Viewer */
     .viewer {
       width: 100%;
       max-width: 1100px;
@@ -103,10 +158,10 @@
       border: 1px solid var(--border-subtle);
       overflow: hidden;
       -webkit-overflow-scrolling: touch;
+      position: relative;
+      z-index: 2;
     }
-    .viewer object,
-    .viewer iframe,
-    .viewer embed {
+    .viewer iframe {
       width: 100%;
       height: 100%;
       border: 0;
@@ -124,76 +179,90 @@
     }
   </style>
 </head>
-
 <body>
 
-<h1>Line 3 Schematic</h1>
-<div class="subtitle">Production Line 3 – Wiring and PLC Diagram</div>
+  <!-- 左右角色 -->
+  <img src="pinkpanther1.png" alt="" class="side-panther left">
+  <img src="pinkpanther2.png" alt="" class="side-panther right">
 
-<div class="toolbar">
-  <a class="btn" id="openNewTab" href="#" rel="noopener">Open PDF in New Tab ↗</a>
-</div>
+  <img src="hangyodon1.png" alt="" class="side-hangyodon left">
+  <img src="hangyodon2.png" alt="" class="side-hangyodon right">
 
-<div class="viewer" id="viewer">
-  <object id="pdfObject" data="" type="application/pdf">
-    <div class="fallback">
-      PDF cannot be displayed.<br>
-      <a class="btn" id="fallbackLink" href="#">Open PDF</a>
-    </div>
-  </object>
-</div>
+  <h1 id="pageTitle">Line 3 Schematic</h1>
+  <div class="subtitle" id="pageSub">Production Line 3 – Wiring and PLC Diagram</div>
 
-<script>
-(function () {
+  <div class="toolbar">
+    <a class="btn" id="openNewTab" href="#" rel="noopener">Open PDF in New Tab ↗</a>
+  </div>
 
-  /** -------------------------------
-   * 1. 取得 ?sec=F12/F13/F16/F201
-   * ------------------------------- */
-  const urlParams = new URLSearchParams(window.location.search);
-  const section = urlParams.get("sec") || "F13";   // default
+  <div class="viewer" id="viewer">
+    <!-- 電腦 / iPad：用 pdf.js viewer -->
+    <iframe id="pdfFrame" title="PDF viewer"></iframe>
+  </div>
 
-  /** -------------------------------
-   * 2. 自動組合 PDF 檔名
-   * ------------------------------- */
-  const lineNumber = 3;   // ←★★★ 這裡是唯一需要換的地方（Line 3/Line 4 就改這個）
-  const pdfFile = `Line-${lineNumber}-${section}-Schematic.pdf`;
+  <script>
+    (function () {
+      // 允許的 section
+      const allowedSections = ['F12','F13','F16','F201'];
 
-  const pdfUrl = pdfFile;
-  const openNewTab = document.getElementById("openNewTab");
-  const viewer = document.getElementById("viewer");
-  const fallbackLink = document.getElementById("fallbackLink");
+      // 讀取網址參數 ?sec=F13
+      const params = new URLSearchParams(window.location.search);
+      let sec = (params.get('sec') || 'F13').toUpperCase();
 
-  openNewTab.href = pdfUrl;
-  fallbackLink.href = pdfUrl;
+      if (!allowedSections.includes(sec)) {
+        sec = 'F13'; // 不在清單就用預設 F13
+      }
 
-         /** -------------------------------
-       * 3. 手機版 → 不內嵌 PDF + 不顯示 openNewTab 按鈕
-       * ------------------------------- */
-      const isMobile = /iphone|ipod|android/i.test(navigator.userAgent);
+      // 原始 PDF 檔名
+      const pdfUrl = "Line-3-" + sec + "-Schematic.pdf";
 
-      if (isMobile) {
-        // 隱藏 Open PDF in New Tab
-        const openNewTab = document.getElementById("openNewTab");
+      // pdf.js viewer 路徑（相對於這個 html）
+      // 你的 pdfjs 放在 /pdfjs/web/viewer.html
+      const pdfjsViewerBase = "pdfjs/web/viewer.html";
+      const viewerUrl = pdfjsViewerBase + "?file=" + encodeURIComponent(pdfUrl) + "#zoom=page-fit";
+
+      const openNewTab   = document.getElementById('openNewTab');
+      const viewer       = document.getElementById('viewer');
+      const frame        = document.getElementById('pdfFrame');
+      const titleEl      = document.getElementById('pageTitle');
+      const subEl        = document.getElementById('pageSub');
+
+      // 更新標題顯示現在是哪一個 section
+      if (titleEl){
+        titleEl.textContent = "Line 3 Schematic – " + sec;
+      }
+      if (subEl){
+        subEl.textContent = "Production Line 3 – Section " + sec + " Wiring and PLC Diagram";
+      }
+
+      // 手機偵測：只把 iPhone / Android Phone 當手機
+      const isMobilePhone = /iphone|ipod|android/i.test(navigator.userAgent);
+
+      if (isMobilePhone) {
+        // 手機板：隱藏上面的 "Open PDF in New Tab" 按鈕
         if (openNewTab) openNewTab.style.display = "none";
 
-        // 顯示手機版 PDF 開啟按鈕
-        viewer.innerHTML = `
-          <div class="fallback">
-            Tap the button below to open PDF.<br><br>
-            <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
-          </div>`;
+        // viewer 改成顯示一顆按鈕，直接開原始 PDF
+        if (viewer) {
+          viewer.innerHTML = `
+            <div class="fallback">
+              Tap the button below to open PDF.<br><br>
+              <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
+            </div>`;
+        }
         return;
       }
 
-
-  /** -------------------------------
-   * 4. 電腦版 → 使用 <object>
-   * ------------------------------- */
-  const obj = document.getElementById("pdfObject");
-  obj.data = pdfUrl;
-
-})();
-</script>
+      // 電腦 + iPad：用 pdf.js viewer 內嵌
+      if (frame) {
+        frame.src = viewerUrl;
+      }
+      if (openNewTab) {
+        // 在新分頁也開 pdf.js viewer
+        openNewTab.href = viewerUrl;
+      }
+    })();
+  </script>
 
 </body>
 </html>
