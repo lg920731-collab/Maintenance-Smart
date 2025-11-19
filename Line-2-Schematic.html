@@ -169,16 +169,16 @@
   /** -------------------------------
    * 3. 手機版 → 不內嵌 PDF
    * ------------------------------- */
-  const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent);
+  const isMobile = /iphone|ipod|android/i.test(navigator.userAgent);
 
-  if (isMobile) {
-    viewer.innerHTML = `
-      <div class="fallback">
-        Tap the button below to open PDF.<br><br>
-        <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
-      </div>`;
-    return;
-  }
+if (isMobile) {
+  viewer.innerHTML = `
+    <div class="fallback">
+      Tap the button below to open PDF.<br><br>
+      <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
+    </div>`;
+  return;
+}
 
   /** -------------------------------
    * 4. 電腦版 → 使用 <object>
