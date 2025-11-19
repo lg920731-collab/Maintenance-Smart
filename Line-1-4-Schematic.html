@@ -200,35 +200,27 @@
     <iframe id="pdfFrame" title="PDF viewer"></iframe>
   </div>
 
-  <script>
+ <script>
   (function () {
-    // 允許的 line & section
+    // ===== 1. 參數解析：line & sec =====
     const allowedLines    = [1, 2, 3, 4];
     const allowedSections = ['F12','F13','F16','F201'];
 
-    // 讀取網址參數 ?line=1&sec=F13
     const params = new URLSearchParams(window.location.search);
     let line = parseInt(params.get('line') || '1', 10);
     let sec  = (params.get('sec') || 'F13').toUpperCase();
 
-    if (!allowedLines.includes(line)) {
-      line = 1;
-    }
-    if (!allowedSections.includes(sec)) {
-      sec = 'F13';
-    }
+    if (!allowedLines.includes(line))  line = 1;
+    if (!allowedSections.includes(sec)) sec = 'F13';
 
-    // 原始 PDF 檔名（在 repo 根目錄）
-    const pdfFileName = "Line-" + line + "-" + sec + "-Schematic.pdf";
+    // 原始 PDF 檔名（在 repo 根目錄，例如 Line-1-F13-Schematic.pdf）
+    const pdfFileName = `Line-${line}-${sec}-Schematic.pdf`;
 
-    // pdf.js viewer 路徑（相對於這個 html）
-    const pdfjsViewerBase = "pdfjs/web/viewer.html";
-    // viewer.html 在 /pdfjs/web，PDF 在根目錄 → 要從 viewer 角度加 ../../
-    const pdfPathForViewer = "../../" + pdfFileName;
-
-    const viewerUrl = pdfjsViewerBase
-      + "?file=" + encodeURIComponent(pdfPathForViewer)
-      + "#zoom=page-fit";
+    // pdf.js viewer 路徑（相對於這個 HTML 的位置）
+    // 本頁在根目錄，viewer 在 /pdfjs/web，PDF 也是根目錄
+    const pdfjsViewerBase  = "pdfjs/web/viewer.html";
+    const pdfPathForViewer = "../../" + pdfFileName; // 相對 viewer.html 的路徑
+    const viewerUrl = `${pdfjsViewerBase}?file=${encodeURIComponent(pdfPathForViewer)}#zoom=page-fit`;
 
     const openNewTab = document.getElementById('openNewTab');
     const viewer     = document.getElementById('viewer');
@@ -236,24 +228,26 @@
     const titleEl    = document.getElementById('pageTitle');
     const subEl      = document.getElementById('pageSub');
 
-    // 更新標題顯示現在是哪一個 line / section
+    // ===== 2. 更新標題 =====
     if (titleEl){
-      titleEl.textContent = "Line " + line + " Schematic – " + sec;
+      titleEl.textContent = `Line ${line} Schematic – ${sec}`;
     }
     if (subEl){
-      subEl.textContent = "Production Line " + line + " – Section " + sec + " Wiring and PLC Diagram";
+      subEl.textContent = `Production Line ${line} – Section ${sec} Wiring and PLC Diagram`;
     }
 
-    // ---- 裝置偵測 ----
-    const ua       = navigator.userAgent.toLowerCase();
-    const isIOS    = ua.includes("iphone") || ua.includes("ipad") || ua.includes("ipod");
-    const isAndroid= ua.includes("android");
-    const isMobile = isIOS || isAndroid;
+    // ===== 3. 裝置偵測：不用 UA，改用觸控 + 螢幕寬度 =====
+    const isTouch       = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const isSmallScreen = window.innerWidth <= 1024;
+    const isMobileLike  = isTouch && isSmallScreen;
 
-    if (isMobile) {
-      // iPhone / iPad / Android：通通不要內嵌，改用系統 / App 開 PDF
+    if (isMobileLike) {
+      // 👉 iPhone / iPad / Android phone & tablet：全部走這邊
+
+      // 隱藏上方的「Open PDF in New Tab」按鈕
       if (openNewTab) openNewTab.style.display = "none";
 
+      // viewer 只顯示一顆大按鈕，交給系統 PDF viewer 處理（多頁滾動正常）
       if (viewer) {
         viewer.innerHTML = `
           <div class="fallback">
@@ -263,18 +257,19 @@
             </a>
           </div>`;
       }
-      return;
+      return; // 🔚 不再用 pdf.js
     }
 
-    // ---- 電腦：用 pdf.js viewer 內嵌 ----
+    // ===== 4. 桌機版：用 pdf.js 內嵌 =====
     if (frame) {
       frame.src = viewerUrl;
     }
     if (openNewTab) {
-      openNewTab.href = viewerUrl;
+      openNewTab.href = viewerUrl;  // 新分頁也開 pdf.js viewer
     }
   })();
 </script>
+
 
 
 </body>
