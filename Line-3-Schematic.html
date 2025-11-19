@@ -166,19 +166,24 @@
   openNewTab.href = pdfUrl;
   fallbackLink.href = pdfUrl;
 
-  /** -------------------------------
- * 3. 手機版 → 不內嵌 PDF
- * ------------------------------- */
-const isMobile = /iphone|ipod|android/i.test(navigator.userAgent);
+         /** -------------------------------
+       * 3. 手機版 → 不內嵌 PDF + 不顯示 openNewTab 按鈕
+       * ------------------------------- */
+      const isMobile = /iphone|ipod|android/i.test(navigator.userAgent);
 
-if (isMobile) {
-  viewer.innerHTML = `
-    <div class="fallback">
-      Tap the button below to open PDF.<br><br>
-      <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
-    </div>`;
-  return;
-}
+      if (isMobile) {
+        // 隱藏 Open PDF in New Tab
+        const openNewTab = document.getElementById("openNewTab");
+        if (openNewTab) openNewTab.style.display = "none";
+
+        // 顯示手機版 PDF 開啟按鈕
+        viewer.innerHTML = `
+          <div class="fallback">
+            Tap the button below to open PDF.<br><br>
+            <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
+          </div>`;
+        return;
+      }
 
 
   /** -------------------------------
