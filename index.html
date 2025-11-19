@@ -531,7 +531,9 @@
             </div>
 
             <div class="schematic-hint">
-              Default file rule: <code>Line-[lineNumber]-[section]-Schematic.html</code> (e.g. <code>Line-1-F13-Schematic.html</code>)
+              Default file rule:
+              <code>Line-[lineNumber]-Schematic.html?sec=[section]</code>
+              (e.g. <code>Line-1-Schematic.html?sec=F13</code>)
             </div>
           </div>
         </li>
@@ -746,7 +748,7 @@
       // Schematic 檔名規則：Line-1-F13-Schematic.html
       function buildSchematicFileName(lineKey, sectionKey){
         const n = lineKey.replace('Line',''); // Line1 -> 1
-        return 'Line-' + n + '-' + sectionKey + '-Schematic.html';
+        return 'Line-' + n + '-Schematic.html?sec=' + sectionKey;
       }
 
       // Program Backup 檔名規則
