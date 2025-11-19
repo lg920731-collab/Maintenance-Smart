@@ -245,7 +245,7 @@
       /** -------------------------------
        * 3. 手機版 → 不內嵌 PDF
        * ------------------------------- */
-      const isMobile = /iphone|ipod|android/i.test(navigator.userAgent);
+     const isMobile = /iphone|ipod|android/i.test(navigator.userAgent);
 
       if (isMobile) {
         viewer.innerHTML = `
@@ -256,17 +256,6 @@
          return;
       }
 
-
-      // 手機：不要內嵌 PDF，改成只顯示一個按鈕
-      if (isMobile && viewer) {
-        viewer.innerHTML = `
-          <div class="fallback">
-            On mobile, tap the button below to view the full PDF.<br><br>
-            <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
-          </div>
-        `;
-        return;
-      }
 
       // 電腦：保留 <object> 內嵌 PDF，失敗時顯示 fallback
       if (obj && viewer) {
