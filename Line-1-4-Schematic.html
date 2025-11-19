@@ -42,6 +42,7 @@
       transition: background .25s ease, color .25s ease;
     }
 
+    /* style 背景—與主頁同步 */
     html[data-style="panther"] body{
       background:
         radial-gradient(circle at top,rgba(244,114,182,.28),transparent),
@@ -166,6 +167,7 @@
       border:0;
       display:block;
     }
+
     .fallback {
       padding: 18px;
       text-align: center;
@@ -195,12 +197,13 @@
   </div>
 
   <div class="viewer" id="viewer">
+    <!-- 電腦：pdf.js viewer；手機 / iPad：會被 JS 改成按鈕 -->
     <iframe id="pdfFrame" title="PDF viewer"></iframe>
   </div>
 
   <script>
     (function () {
-      // ===== 1. 允許的 line / section =====
+      // ===== 1. 解析 ?line=1&sec=F13 =====
       const allowedLines = ['1','2','3','4'];
       const allowedSecs  = ['F12','F13','F16','F201'];
 
@@ -208,17 +211,16 @@
       let line = params.get('line') || '1';
       let sec  = (params.get('sec')  || 'F13').toUpperCase();
 
-      // 正規化 line / sec
       line = String(parseInt(line,10) || 1);
       if (!allowedLines.includes(line)) line = '1';
       if (!allowedSecs.includes(sec))  sec  = 'F13';
 
-      // ===== 2. 組 PDF 絕對網址 =====
+      // ===== 2. 組 PDF 路徑（放在根目錄） =====
       const BASE = 'https://lg920731-collab.github.io/Maintenance-Smart/';
       const pdfFileName = `Line-${line}-${sec}-Schematic.pdf`;
       const pdfUrl      = BASE + pdfFileName;
 
-      // pdf.js viewer 相對路徑（放在根目錄 /pdfjs/web/viewer.html）
+      // pdf.js viewer 路徑（在根目錄 /pdfjs/web/viewer.html）
       const pdfjsViewerBase = 'pdfjs/web/viewer.html';
       const viewerUrl = `${pdfjsViewerBase}?file=${encodeURIComponent(pdfUrl)}#zoom=page-fit`;
 
@@ -228,7 +230,7 @@
       const frame   = document.getElementById('pdfFrame');
       const openNewTab = document.getElementById('openNewTab');
 
-      // 顯示標題
+      // ===== 3. 更新標題 =====
       if (titleEl){
         titleEl.textContent = `Line ${line} Schematic – ${sec}`;
       }
@@ -236,32 +238,33 @@
         subEl.textContent = `Production Line ${line} – Section ${sec} Wiring and PLC Diagram`;
       }
 
-      // ===== 3. 裝置偵測 =====
-      const ua = navigator.userAgent.toLowerCase();
-      const isIPhoneOrIPod = /iphone|ipod/.test(ua);
-      const isAndroidPhone = /android/.test(ua) && /mobile/.test(ua);
-      const isMobilePhone  = isIPhoneOrIPod || isAndroidPhone;
+      // ===== 4. 裝置偵測 =====
+      const isTouch       = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+      const isSmallScreen = window.innerWidth <= 1024;
+      const isMobileOrTablet = isTouch && isSmallScreen;
+      // 👉 isMobileOrTablet = iPhone / Android 手機 & 平板 / iPad
 
-      if (isMobilePhone) {
-        // 手機板：只給一顆按鈕開原始 PDF，隱藏「Open in new tab」
+      if (isMobileOrTablet) {
+        // 手機 & iPad：只顯示一顆按鈕開 PDF
         if (openNewTab) openNewTab.style.display = 'none';
-
         if (viewer) {
           viewer.innerHTML = `
             <div class="fallback">
               Tap the button below to open PDF.<br><br>
-              <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
+              <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">
+                Open PDF ↗
+              </a>
             </div>`;
         }
         return;
       }
 
-      // ===== 4. 電腦 + iPad / 平板：內嵌 pdf.js viewer =====
+      // ===== 5. 桌機：內嵌 pdf.js viewer =====
       if (frame) {
         frame.src = viewerUrl;
       }
       if (openNewTab) {
-        openNewTab.href = viewerUrl;
+        openNewTab.href = viewerUrl;   // 在新分頁也是 pdf.js viewer
       }
     })();
   </script>
