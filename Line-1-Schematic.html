@@ -190,8 +190,8 @@
   <img src="hangyodon1.png" alt="" class="side-hangyodon left">
   <img src="hangyodon2.png" alt="" class="side-hangyodon right">
 
-  <h1>Line 1 Schematic</h1>
-  <div class="subtitle">Production Line 1 – Wiring and PLC Diagram</div>
+  <h1 id="pageTitle">Line 1 Schematic</h1>
+  <div class="subtitle" id="pageSub">Production Line 1 – Wiring and PLC Diagram</div>
 
   <div class="toolbar">
     <a class="btn" id="openNewTab" href="#" rel="noopener">Open PDF in New Tab ↗</a>
@@ -199,26 +199,53 @@
 
   <div class="viewer" id="viewer">
     <!-- 電腦版才會看到這個 object；手機版會被 JS 換成按鈕 -->
-    <object id="pdfObject" data="Line-1-F13-Schematic.pdf#view=FitH" type="application/pdf">
+    <object id="pdfObject" data="" type="application/pdf">
       <div class="fallback">
         Your browser cannot display embedded PDFs.<br>
-        <a class="btn" href="Line-1-F13-Schematic.pdf">Download / Open PDF</a>
+        <a class="btn" href="#" id="fallbackLink">Download / Open PDF</a>
       </div>
     </object>
   </div>
 
   <script>
     (function () {
-      const pdfUrl = "Line-1-F13-Schematic.pdf";
+      // 允許的 section
+      const allowedSections = ['F12','F13','F16','F201'];
+
+      // 讀取網址參數 ?sec=F13
+      const params = new URLSearchParams(window.location.search);
+      let sec = (params.get('sec') || 'F13').toUpperCase();
+
+      if (!allowedSections.includes(sec)) {
+        sec = 'F13'; // 不在清單就用預設 F13
+      }
+
+      const pdfUrl = "Line-1-" + sec + "-Schematic.pdf";
+
       const openNewTab = document.getElementById('openNewTab');
       const viewer = document.getElementById('viewer');
+      const obj = document.getElementById('pdfObject');
+      const fallbackLink = document.getElementById('fallbackLink');
+      const titleEl = document.getElementById('pageTitle');
+      const subEl = document.getElementById('pageSub');
 
-      openNewTab.href = pdfUrl;
+      // 更新標題顯示現在是哪一個 section
+      if (titleEl){
+        titleEl.textContent = "Line 1 Schematic – " + sec;
+      }
+      if (subEl){
+        subEl.textContent = "Production Line 1 – Section " + sec + " Wiring and PLC Diagram";
+      }
+
+      // 按鈕 / 連結指向目前的 PDF
+      if (openNewTab) openNewTab.href = pdfUrl;
+      if (fallbackLink) fallbackLink.href = pdfUrl;
+      if (obj) obj.data = pdfUrl + "#view=FitH";
 
       const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent);
 
       // 手機：不要內嵌 PDF，改成只顯示一個按鈕
-      if (isMobile) {
+      if (isMobile && viewer) {
         viewer.innerHTML = `
           <div class="fallback">
             On mobile, tap the button below to view the full PDF.<br><br>
@@ -229,8 +256,7 @@
       }
 
       // 電腦：保留 <object> 內嵌 PDF，失敗時顯示 fallback
-      const obj = document.getElementById('pdfObject');
-      if (obj) {
+      if (obj && viewer) {
         obj.addEventListener('error', () => {
           viewer.innerHTML =
             '<div class="fallback">Unable to load PDF. <a class="btn" href="' + pdfUrl + '">Open PDF</a></div>';
