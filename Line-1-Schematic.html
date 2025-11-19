@@ -242,19 +242,26 @@
       if (fallbackLink) fallbackLink.href = pdfUrl;
       if (obj) obj.data = pdfUrl + "#view=FitH";
 
-      /** -------------------------------
-       * 3. 手機版 → 不內嵌 PDF
+       /** -------------------------------
+       /** -------------------------------
+       * 3. 手機版 → 不內嵌 PDF + 不顯示 openNewTab 按鈕
        * ------------------------------- */
-     const isMobile = /iphone|ipod|android/i.test(navigator.userAgent);
+      const isMobile = /iphone|ipod|android/i.test(navigator.userAgent);
 
       if (isMobile) {
+        // 隱藏 Open PDF in New Tab
+        const openNewTab = document.getElementById("openNewTab");
+        if (openNewTab) openNewTab.style.display = "none";
+
+        // 顯示手機版 PDF 開啟按鈕
         viewer.innerHTML = `
           <div class="fallback">
             Tap the button below to open PDF.<br><br>
             <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
-            </div>`;
-         return;
+          </div>`;
+        return;
       }
+
 
 
       // 電腦：保留 <object> 內嵌 PDF，失敗時顯示 fallback
