@@ -748,10 +748,9 @@
      // Schematic 檔名規則：Line-1-Schematic.html?sec=F13
       function buildSchematicFileName(lineKey, sectionKey){
         const n = lineKey.replace('Line',''); // Line1 -> 1
+        return 'Line-1-4-Schematic.html?line=' + n + '&sec=' + sectionKey;
+        }
 
-      // 統一用 Line-[n]-Schematic.html，加上 ?sec=Fxx
-      return 'Line-' + n + '-Schematic.html?sec=' + encodeURIComponent(sectionKey);
-      }
 
       // Program Backup 檔名規則
       function buildBackupFileName(lineKey, sectionKey){
