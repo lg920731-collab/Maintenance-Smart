@@ -219,8 +219,10 @@
       // pdf.js viewer 路徑（相對於這個 html）
       // 你的 pdfjs 放在 /pdfjs/web/viewer.html
       const pdfjsViewerBase = "pdfjs/web/viewer.html";
-      const viewerUrl = pdfjsViewerBase + "?file=" + encodeURIComponent("../" + pdfUrl) + "#zoom=page-fit";
-
+      const viewerUrl =
+        "pdfjs/web/viewer.html?file=" +
+        encodeURIComponent("../../" + pdfUrl) +
+        "#zoom=page-fit";
 
       const openNewTab   = document.getElementById('openNewTab');
       const viewer       = document.getElementById('viewer');
