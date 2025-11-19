@@ -242,7 +242,20 @@
       if (fallbackLink) fallbackLink.href = pdfUrl;
       if (obj) obj.data = pdfUrl + "#view=FitH";
 
-      const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent);
+      /** -------------------------------
+       * 3. 手機版 → 不內嵌 PDF
+       * ------------------------------- */
+      const isMobile = /iphone|ipod|android/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        viewer.innerHTML = `
+          <div class="fallback">
+            Tap the button below to open PDF.<br><br>
+            <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
+            </div>`;
+         return;
+      }
+
 
       // 手機：不要內嵌 PDF，改成只顯示一個按鈕
       if (isMobile && viewer) {
