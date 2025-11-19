@@ -223,8 +223,7 @@
 
     // pdf.js viewer 路徑（相對於這個 html）
     const pdfjsViewerBase = "pdfjs/web/viewer.html";
-
-    // 重點：viewer.html 在 pdfjs/web，PDF 在根目錄 → 要加 ../../
+    // viewer.html 在 /pdfjs/web，PDF 在根目錄 → 要從 viewer 角度加 ../../
     const pdfPathForViewer = "../../" + pdfFileName;
 
     const viewerUrl = pdfjsViewerBase
@@ -245,47 +244,33 @@
       subEl.textContent = "Production Line " + line + " – Section " + sec + " Wiring and PLC Diagram";
     }
 
-          // 手機 / 平板偵測
-      const ua      = navigator.userAgent.toLowerCase();
-      const isIPhone= ua.includes("iphone") || ua.includes("ipod");
-      const isIPad  = ua.includes("ipad");
-      const isAndroid= ua.includes("android");
-      // 把 iPhone + Android phone 視為「小手機」
-      const isSmallPhone = isIPhone || (isAndroid && !isIPad);
+    // ---- 裝置偵測 ----
+    const ua       = navigator.userAgent.toLowerCase();
+    const isIOS    = ua.includes("iphone") || ua.includes("ipad") || ua.includes("ipod");
+    const isAndroid= ua.includes("android");
+    const isMobile = isIOS || isAndroid;
 
-      if (isSmallPhone || isIPad) {
-        // 小手機 / iPad 都不要內嵌 viewer，避免 iframe + PDF 奇怪限制
-        if (openNewTab) openNewTab.style.display = "none";
+    if (isMobile) {
+      // iPhone / iPad / Android：通通不要內嵌，改用系統 / App 開 PDF
+      if (openNewTab) openNewTab.style.display = "none";
 
-        // iPad → 用 pdf.js viewer 開（可以翻頁）
-        // 手機 → 直接開原始 PDF，由系統 viewer 顯示
-        const targetUrl = isIPad ? viewerUrl : pdfFileName;
-
-        if (viewer) {
-          viewer.innerHTML = `
-            <div class="fallback">
-              Tap the button below to open PDF.<br><br>
-              <a class="btn" href="${targetUrl}" target="_blank" rel="noopener">Open PDF ↗</a>
-            </div>`;
-        }
-        return;
+      if (viewer) {
+        viewer.innerHTML = `
+          <div class="fallback">
+            Tap the button below to open PDF.<br><br>
+            <a class="btn" href="${pdfFileName}" target="_blank" rel="noopener">
+              Open PDF ↗
+            </a>
+          </div>`;
       }
+      return;
+    }
 
-      // 電腦：用 pdf.js viewer 內嵌
-      if (frame) {
-        frame.src = viewerUrl;
-      }
-      if (openNewTab) {
-        openNewTab.href = viewerUrl;
-      }
-
-
-    // 電腦 + iPad：用 pdf.js viewer 內嵌
+    // ---- 電腦：用 pdf.js viewer 內嵌 ----
     if (frame) {
       frame.src = viewerUrl;
     }
     if (openNewTab) {
-      // 在新分頁也開 pdf.js viewer
       openNewTab.href = viewerUrl;
     }
   })();
